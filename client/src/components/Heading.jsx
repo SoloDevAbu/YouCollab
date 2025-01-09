@@ -3,7 +3,7 @@ import collaborationImage from '../assets/homeimage.jpg'
 
 const Heading = () => {
   return (
-    <div className='flex text-center pt-20 px-6 md:px-10 gap-6'>
+    <div className='flex text-center pt-20 px-6 md:px-20 gap-6'>
         <div className='hidden md:block md:w-1/2'>
             <img src={collaborationImage} alt="" className='rounded-lg bg-slate-100 shadow-lg'/>
         </div>
