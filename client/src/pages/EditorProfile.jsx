@@ -1,8 +1,17 @@
 import React from 'react'
+import EditorInfo from '../components/editor/EditorInfo'
+import EditorUpload from '../components/editor/EditorUpload'
 
 const EditorProfile = () => {
   return (
-    <div>EditorProfile</div>
+    <div className='flex flex-col md:flex-row'>
+      <div className='w-full md:w-1/4'>
+        <EditorInfo/>
+      </div>
+      <div className='w-full md:w-3/4'>
+        <EditorUpload/>
+      </div>
+    </div>
   )
 }
 

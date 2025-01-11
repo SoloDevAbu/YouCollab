@@ -1,9 +1,10 @@
 import React from 'react'
+import img from '../../assets/SignupImg.jpg'
 
 const SingupLeft = () => {
   return (
-    <div className='hidden md:block md:w-1/2'>
-        Here image of sugnup
+    <div className='px-6'>
+        <img src={img} alt="SingUp Illustration" className='rounded-xl'/>
     </div>
   )
 }
