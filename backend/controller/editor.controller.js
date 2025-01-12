@@ -8,8 +8,13 @@ const updateEditor = async (req, res) => {
 
 }
 
+const logoutEditor = async (req, res)=> {
+
+}
+
 module.exports = {
     createEditor,
     loginEditor,
     updateEditor,
+    logoutEditor
 }

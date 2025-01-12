@@ -1,9 +1,10 @@
 const { Router } = require('express');
-const { createYoutuber, loginYoutuber, updateYoutuber } = require('../controller/youtuber.controller');
+const { createYoutuber, loginYoutuber, updateYoutuber, logoutYoutuber } = require('../controller/youtuber.controller');
 const router = Router();
 
 router.post('/singin', createYoutuber);
 router.post('/login', loginYoutuber);
-router.post('/update', updateYoutuber);
+router.put('/update', updateYoutuber);
+router.post('/logout', logoutYoutuber);
 
 module.exports = router;
