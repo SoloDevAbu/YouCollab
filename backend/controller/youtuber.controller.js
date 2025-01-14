@@ -74,7 +74,7 @@ const loginYoutuber = async (req, res) => {
             { expiresIn: '7d' }
         );
 
-        res.status(201).cookie('token', token, {
+        res.status(201).cookie('token', `Bearer ${token}`, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
