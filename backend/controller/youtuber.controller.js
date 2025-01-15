@@ -254,6 +254,140 @@ const verifyEmail = async (req, res) => {
     }
 }
 
+const isAuthenticated = async (req, res) => {
+    try {
+        return res.json({
+            success: true,
+        })
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, error: error.message });
+    }
+}
+
+const sendResetOtp = async (req, res) => {
+    const {email} = req.body;
+
+    if(!email) {
+        return res.json({
+            success: false,
+            message: 'Email is required'
+        })
+    }
+
+    try {
+        const youtuber = await Youtuber.findOne({email});
+        if(!user) {
+            return res.json({
+                success: false,
+                message: 'User not found'
+            })
+        }
+
+        const otp = String(Math.floor(100000 + Math.random() * 900000));
+
+        youtuber.verifyOtp = otp;
+        youtuber.verifyOtpExpiredAt = Date.now() + ( 5 * 60 * 1000);
+
+        await youtuber.save();
+
+        const mailOptions = {
+            from: process.env.SENDER_EMAIL,
+            to: youtuber.email,
+            subject: "Account verification OTP",
+            text: `Your OTP for Re-Set password is ${otp} OTP is valid till 5 minutes after receiving the otp`
+        }
+
+        await transporter.sendMail(mailOptions);
+
+        return res.json({
+            success: true,
+            message: 'Reset OTP sent successfully'
+        })
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, error: error.message });
+    }
+}
+
+const resetPassword = async (req, res) => {
+    const {email, otp, newPassword} = req.body;
+
+    if(!email || !otp || !newPassword) {
+        return res.json({
+            success: false,
+            message: 'All the fields are required'
+        })
+    }
+
+    try {
+        const youtuber = await Youtuber.findOne({email});
+
+        if(!youtuber) {
+            return res.json({
+                success: false,
+                message: 'User not found'
+            })
+        }
+
+        if(youtuber.resetOtp === '' || youtuber.resetOtp !== otp) {
+            return res.json({
+                success: false,
+                message: 'Invalid OTP'
+            })
+        }
+
+        if(youtuber.resetOtpExpiredAt < Date.now()) {
+            return res.json({
+                success: false,
+                message: 'OTP expired'
+            })
+        }
+
+        const hashPassword = await bcrypt.hash(newPassword, 10);
+
+        youtuber.password = hashPassword;
+        youtuber.resetOtp = '';
+        youtuber.resetOtpExpiredAt = 0;
+
+        await youtuber.save();
+
+        return res.json({
+            success: true,
+            message: 'Password changed successfullyS'
+        })
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, error: error.message });
+    }
+}
+
+const getYoutuber = async (req, res) => {
+    const {youtuberId} = req.youtuber;
+    try {
+        const youtuber = await Youtuber.findById(youtuberId);
+
+        if(!youtuber) {
+            return res.json({
+                success: false,
+                message: 'User not found'
+            })
+        }
+
+        res.json({
+            success: true,
+            youtuberData: {
+                name: youtuber.name,
+                email: youtuber.email,
+                isAccountVerified: youtuber.isAccountVerified
+            }
+        })
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, error: error.message });
+    }
+}
+
 module.exports = {
     createYoutuber,
     loginYoutuber,
@@ -261,4 +395,8 @@ module.exports = {
     logoutYoutuber,
     sendVerifyOtp,
     verifyEmail,
+    isAuthenticated,
+    sendResetOtp,
+    resetPassword,
+    getYoutuber,
 }
