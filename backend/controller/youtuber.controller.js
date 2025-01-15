@@ -1,6 +1,7 @@
 const { Youtuber } = require("../db/db");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const transporter = require("../config/nodemailer");
 require('dotenv').config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -38,7 +39,18 @@ const createYoutuber = async (req, res) => {
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
             maxAge: 7 * 24 * 60 * 60 * 1000
-        }).json({
+        })
+
+        const mailOptions = {
+            from: process.env.SENDER_EMAIL,
+            to: email,
+            subject: "Welcome to YouCollab",
+            text: `Welcome to YouCollab. You account has been created successfully with email id ${email}`
+        }
+
+        await transporter.sendMail(mailOptions);
+
+        return res.json({
             success: true,
             message: 'User created successfully',
         });        
@@ -50,12 +62,12 @@ const createYoutuber = async (req, res) => {
 const loginYoutuber = async (req, res) => {
     const {email, password} = req.body;
 
-    try {
         if(!email || !password){
             return res.status(400).json({
                 message: 'Email and Password are required'
             })
         }
+    try {
 
         const youtuber = await Youtuber.findOne({email});
         if(!youtuber) {
