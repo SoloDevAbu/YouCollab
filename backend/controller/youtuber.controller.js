@@ -86,17 +86,18 @@ const loginYoutuber = async (req, res) => {
             { expiresIn: '7d' }
         );
 
-        res.status(201).cookie('token', `Bearer ${token}`, {
+        res.status(201).cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
             maxAge: 7 * 24 * 60 * 60 * 1000
-        }).json({
+        })
+        return res.json({
             success: true,
             message: 'User signed in successfully',
         });
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        return res.status(500).json({ success: false, error: error.message });
     }
 }
 const updateYoutuber = async (req, res) => {
@@ -162,9 +163,102 @@ const logoutYoutuber = async (req, res) => {
     }
 }
 
+const sendVerifyOtp = async (req, res) => {
+
+    try {
+        const {youtuberId} = req.youtuber;
+
+        const youtuber = await Youtuber.findById(youtuberId);
+
+        if(youtuber.isAccountVerified) {
+            return res.json({
+                success: true,
+                message: 'Account already verified'
+            })
+        }
+
+        const otp = String(Math.floor(100000 + Math.random() * 900000));
+
+        youtuber.verifyOtp = otp;
+        youtuber.verifyOtpExpiredAt = Date.now() + ( 5 * 60 * 1000);
+
+        await youtuber.save();
+
+        const mailOptions = {
+            from: process.env.SENDER_EMAIL,
+            to: youtuber.email,
+            subject: "Account verification OTP",
+            text: `Your verification OTP is ${otp}. OTP is valid till 5 minutes after receiving the otp`
+        }
+
+        await transporter.sendMail(mailOptions);
+
+        res.json({
+            success: true,
+            message: 'Verification OTP sent successfully'
+        })
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, error: error.message });
+    }
+}
+
+const verifyEmail = async (req, res) => {
+    const {youtuberId} = req.youtuber;
+    const {otp} = req.body;
+
+    if(!youtuberId || !otp) {
+        return res.json({
+            success: false,
+            message: 'Missing details'
+        })
+    }
+
+    try {
+        const youtuber = await Youtuber.findById(youtuberId);
+
+        if(!youtuber) {
+            return res.json({
+                success: false,
+                message: 'User not found'
+            })
+        }
+
+        if(youtuber.verifyOtp === '' || youtuber.verifyOtp !== otp) {
+            return res.json({
+                success: false,
+                message: 'Invalid OTP'
+            })
+        }
+
+        if(youtuber.verifyOtpExpiredAt < Date.now()) {
+            return res.json({
+                success: false,
+                message: 'OTP Expired'
+            })
+        }
+
+        youtuber.isAccountVerified = true;
+        youtuber.verifyOtp = '';
+        youtuber.verifyOtpExpiredAt = 0;
+
+        await youtuber.save();
+
+        return res.json({
+            success: true,
+            message: 'Email verified successfully'
+        })
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, error: error.message });
+    }
+}
+
 module.exports = {
     createYoutuber,
     loginYoutuber,
     updateYoutuber,
     logoutYoutuber,
+    sendVerifyOtp,
+    verifyEmail,
 }

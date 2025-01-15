@@ -1,17 +1,17 @@
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = process.env.JWT_SECRET;
-
 require('dotenv').config();
 
+const JWT_SECRET = process.env.JWT_SECRET;
+
 const youtuberMiddleware = async (req, res, next) => {
-    const authHeader = req.headers.authorization;
+    const token = req.cookies.token;
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return res.status(403).json({ message: 'Access token is missing or invalid.' });
+    if (!token) {
+        return res.status(403).json({ 
+            success: false,
+            message: 'Not Authorized, Login again'
+        });
     }
-
-    const token = authHeader.split(' ')[1];
-
 
     try {
         const decode = jwt.verify(token, JWT_SECRET);
