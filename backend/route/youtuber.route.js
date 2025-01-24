@@ -3,7 +3,7 @@ const { createYoutuber, loginYoutuber, updateYoutuber, logoutYoutuber, sendVerif
 const youtuberMiddleware = require('../middleware/youtuber.middleware');
 const router = Router();
 
-router.post('/singin', createYoutuber);
+router.post('/singnup', createYoutuber);
 router.post('/login', loginYoutuber);
 router.put('/update',youtuberMiddleware, updateYoutuber);
 router.post('/logout', logoutYoutuber);
