@@ -1,9 +1,12 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
+import { AppContext } from '../../context/AppContext';
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const SignupForm = () => {
+    const {setIsLoggedin, getuserData} = useContext(AppContext);
+
     const [signupInfo, setSignupInfo] = useState({
         name: '',
         email: '',
@@ -40,15 +43,23 @@ const SignupForm = () => {
         setLoading(true);
 
         try {
-            const response = await axios.post(`${BACKEND_URL}/signin`, {
+            axios.defaults.withCredentials = true;
+            const {data} = await axios.post(`${BACKEND_URL}/signup`, {
                 name,
                 email,
                 password
             })
 
-            navigate('/')
-        } catch (error) {
+            if(data.success) {
+                setIsLoggedin(true);
+                getuserData()
+                navigate('/');
+            } else {
+                alert(data.message)
+            }
 
+        } catch (error) {
+            alert.error(data.message)
         }
 
     }
