@@ -5,7 +5,9 @@ import { AppContext } from '../../context/AppContext';
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const SignupForm = () => {
-    const {setIsLoggedin, getuserData} = useContext(AppContext);
+    const { setIsLoggedin, getuserData } = useContext(AppContext);
+
+    const [category, setCategory] = useState('youtuber');
 
     const [signupInfo, setSignupInfo] = useState({
         name: '',
@@ -43,23 +45,41 @@ const SignupForm = () => {
         setLoading(true);
 
         try {
-            axios.defaults.withCredentials = true;
-            const {data} = await axios.post(`${BACKEND_URL}/signup`, {
-                name,
-                email,
-                password
-            })
 
-            if(data.success) {
-                setIsLoggedin(true);
-                getuserData()
-                navigate('/');
-            } else {
-                alert(data.message)
+            axios.defaults.withCredentials = true;
+            if(category === 'youtuber'){
+                const { data } = await axios.post(`${BACKEND_URL}/youtuber/signup`, {
+                    name,
+                    email,
+                    password
+                })
+    
+                if (data.success) {
+                    setIsLoggedin(true);
+                    getuserData()
+                    navigate('/');
+                } else {
+                    alert(data.message)
+                }
+            } else if(category === 'editor'){
+                const { data } = await axios.post(`${BACKEND_URL}/editor/signup`, {
+                    name,
+                    email,
+                    password
+                })
+    
+                if (data.success) {
+                    setIsLoggedin(true);
+                    getuserData()
+                    navigate('/');
+                } else {
+                    alert(data.message)
+                }
             }
 
         } catch (error) {
-            alert.error(data.message)
+            console.error('Signup error:', error);
+            setErrors({ general: 'An error occurred during signup. Please try again.' });
         }
 
     }
@@ -67,6 +87,18 @@ const SignupForm = () => {
     return (
         <div className=" bg-slate-400 container w-max mx-auto py-4 px-5 rounded-lg md:px-8 md:py-8">
             <form className="w-full" onSubmit={handleSignup}>
+                <div className='flex justify-center items-center'>
+                    <select
+                        name="category"
+                        id="category"
+                        className='rounded-md font-bold bg-slate-600 text-white px-2 py-1 outline-none'
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                    >
+                        <option value="youtuber">Youtuber</option>
+                        <option value="editor">Editor</option>
+                    </select>
+                </div>
                 <div className="mb-4">
                     <label className="block text-black text-sm font-bold font-sans mb-1" htmlFor="name">
                         Name
@@ -117,7 +149,9 @@ const SignupForm = () => {
                         {loading ? 'Creating Account' : 'Create Account'}
                     </button>
                 </div>
-
+                
+                {errors.general && <p className="text-red-500 text-xs italic">{errors.general}</p>}
+                
             </form>
         </div>
     )

@@ -12,8 +12,8 @@ export const AppContextProvider = (props) => {
         try {
             const {data} = axios.get('http://localhost:5000/api/v1/youtuber/profile')
             data.success ? setUserData(data.youtuberData) : alert(data.message);
-        } catch (error) {
-            alert(data.message);
+        } catch(e) {
+            alert(e.message)
         }
     }
 
