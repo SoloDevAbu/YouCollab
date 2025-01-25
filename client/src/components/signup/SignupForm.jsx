@@ -5,7 +5,7 @@ import { AppContext } from '../../context/AppContext';
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const SignupForm = () => {
-    const { setIsLoggedin, getuserData } = useContext(AppContext);
+    const { isLoggedin, userData } = useContext(AppContext);
 
     const [category, setCategory] = useState('youtuber');
 
@@ -47,30 +47,30 @@ const SignupForm = () => {
         try {
 
             axios.defaults.withCredentials = true;
-            if(category === 'youtuber'){
+            if (category === 'youtuber') {
                 const { data } = await axios.post(`${BACKEND_URL}/youtuber/signup`, {
                     name,
                     email,
                     password
                 })
-    
+
                 if (data.success) {
-                    setIsLoggedin(true);
-                    getuserData()
+                    // setIsLoggedin(true);
+                    // getuserData()
                     navigate('/');
                 } else {
                     alert(data.message)
                 }
-            } else if(category === 'editor'){
+            } else if (category === 'editor') {
                 const { data } = await axios.post(`${BACKEND_URL}/editor/signup`, {
                     name,
                     email,
                     password
                 })
-    
+
                 if (data.success) {
-                    setIsLoggedin(true);
-                    getuserData()
+                    // setIsLoggedin(true);
+                    // getuserData()
                     navigate('/');
                 } else {
                     alert(data.message)
@@ -80,6 +80,9 @@ const SignupForm = () => {
         } catch (error) {
             console.error('Signup error:', error);
             setErrors({ general: 'An error occurred during signup. Please try again.' });
+
+        } finally {
+            setLoading(false);
         }
 
     }
@@ -149,9 +152,9 @@ const SignupForm = () => {
                         {loading ? 'Creating Account' : 'Create Account'}
                     </button>
                 </div>
-                
+
                 {errors.general && <p className="text-red-500 text-xs italic">{errors.general}</p>}
-                
+
             </form>
         </div>
     )

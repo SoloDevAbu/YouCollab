@@ -1,28 +1,38 @@
-import axios from "axios";
-import { createContext, useState } from "react";
+import Cookies from 'js-cookie';
+import { createContext, useEffect, useState } from "react";
+import { jwtDecode } from 'jwt-decode';
 
 export const AppContext = createContext();
 
 export const AppContextProvider = (props) => {
 
     const [isLoggedin, setIsLoggedin] = useState(false);
-    const [userData, setUserData] = useState(false);
+    const [userData, setUserData] = useState(null);
 
-    const getuserData = async () => {
-        try {
-            const {data} = axios.get('http://localhost:5000/api/v1/youtuber/profile')
-            data.success ? setUserData(data.youtuberData) : alert(data.message);
-        } catch(e) {
-            alert(e.message)
+    useEffect(() => {
+        const token = Cookies.get('token');
+        console.log('Token from Cookies:', token);
+        if (token) {
+            try {
+                const decode = jwtDecode(token);
+                console.log('Decoded Token:', decode);
+                setUserData(decode);
+                setIsLoggedin(true);
+            } catch (error) {
+                console.error('Error decoding token:', error);
+            }
+        } else {
+            console.log('No token found in cookies.');
         }
-    }
+    }, []);
+    
+    
 
     const value = {
         isLoggedin,
         setIsLoggedin,
         userData,
         setUserData,
-        getuserData,
     }
     return (
         <AppContext.Provider value={value}>

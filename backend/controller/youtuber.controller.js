@@ -32,14 +32,25 @@ const createYoutuber = async (req, res) => {
             password: hashPassword
         })
 
-        const token = jwt.sign({youtuberId: youtuber._id}, JWT_SECRET, {expiresIn: '7d'})
+        const token = jwt.sign(
+            {youtuberId: youtuber._id, name: youtuber.name, email: youtuber.email}, 
+            JWT_SECRET, 
+            {expiresIn: '7d'}
+        )
+
+        // res.status(201).cookie('token', token, {
+        //     httpOnly: true,
+        //     secure: process.env.NODE_ENV === 'production',
+        //     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+        //     maxAge: 7 * 24 * 60 * 60 * 1000
+        // })
 
         res.status(201).cookie('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        })
+            httpOnly: false,
+            secure: false,
+            sameSite: 'strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        });
 
         const mailOptions = {
             from: process.env.SENDER_EMAIL,
@@ -81,17 +92,24 @@ const loginYoutuber = async (req, res) => {
         }
 
         const token = jwt.sign(
-            { youtuberId: youtuber._id },
-            JWT_SECRET,
-            { expiresIn: '7d' }
-        );
+            {youtuberId: youtuber._id, name: youtuber.name, email: youtuber.email}, 
+            JWT_SECRET, 
+            {expiresIn: '7d'}
+        )
 
+        // res.status(201).cookie('token', token, {
+        //     httpOnly: true,
+        //     secure: process.env.NODE_ENV === 'production',
+        //     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+        //     maxAge: 7 * 24 * 60 * 60 * 1000
+        // })
         res.status(201).cookie('token', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        })
+            secure: false,
+            sameSite: 'lax',
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        });
+        
         return res.json({
             success: true,
             message: 'User signed in successfully',
