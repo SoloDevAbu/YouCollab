@@ -7,7 +7,25 @@ const YoutuberVideos = () => {
       <h1 className='text-2xl font-bold mb-4'>Recent Uploads</h1>
       <div className='min-h-64 bg-slate-100 rounded-lg p-4'>
         {/*thumbnail and the tags */}
-        
+        <div className='flex flex-col md:flex-row gap-6'>
+          {/* thumbnail */}
+          <div className='md:w-1/2 aspect-video'>
+            <img src={sample} alt="" />
+          </div>
+          {/* tags */}
+          <div className='md:w-1/2 bg-gray-300 rounded-lg p-5 flex flex-wrap h-max gap-2.5 font-semibold text-white'>
+              <h3 className='bg-gray-400 px-2.5 py-1 rounded-lg'>First tag</h3>
+              <h3 className='bg-gray-400 px-2.5 py-1 rounded-lg'>Second tag</h3>
+              <h3 className='bg-gray-400 px-2.5 py-1 rounded-lg'>Third tag</h3>
+              <h3 className='bg-gray-400 px-2.5 py-1 rounded-lg'>Fourth tag</h3>
+              <h3 className='bg-gray-400 px-2.5 py-1 rounded-lg'>Second tag</h3>
+              <h3 className='bg-gray-400 px-2.5 py-1 rounded-lg'>Third tag</h3>
+              <h3 className='bg-gray-400 px-2.5 py-1 rounded-lg'>Fourth tag</h3>
+              <h3 className='bg-gray-400 px-2.5 py-1 rounded-lg'>Second tag</h3>
+              <h3 className='bg-gray-400 px-2.5 py-1 rounded-lg'>Third tag</h3>
+              <h3 className='bg-gray-400 px-2.5 py-1 rounded-lg'>Fourth tag</h3>
+          </div>
+        </div>
         {/*Title and description */}
         <div className='mt-8 font-sans flex flex-col gap-2'>
           <h1 className='text-lg font-bold'>Here the title of the video will be shown</h1>
