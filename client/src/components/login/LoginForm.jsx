@@ -1,7 +1,16 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { AppContext } from '../../context/AppContext';
+import axios from 'axios';
+import Cookies from 'js-cookie'
+import { jwtDecode } from 'jwt-decode';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const LoginForm = () => {
+
+    const { setIsLoggedin, setUserData } = useContext(AppContext)
+
+    const [category, setCategory] = useState('youtuber');
 
     const [loginInfo, setLoginInfo] = useState({
         email: '',
@@ -25,7 +34,6 @@ const LoginForm = () => {
 
         const newErrors = {};
 
-        if (!name) newErrors.name = 'Name is required';
         if (!email) newErrors.email = 'Email is required';
         if (!password) newErrors.password = 'Password is required';
 
@@ -38,20 +46,57 @@ const LoginForm = () => {
         setLoading(true);
 
         try {
-            const response = await axios.post(`${BACKEND_URL}/login`, {
-                email,
-                password
-            })
 
-            navigate('/')
+            axios.defaults.withCredentials = true;
+            let response;
+
+            if (category === 'youtuber') {
+                response = await axios.post(`${BACKEND_URL}/youtuber/login`, { email, password });
+            } else if (category === 'editor') {
+                response = await axios.post(`${BACKEND_URL}/editor/login`, { email, password });
+            }
+
+            const { data } = response;
+            const token = Cookies.get('token');
+
+            if (data.success && token) {
+                try {
+                    const decode = jwtDecode(token);
+                    setIsLoggedin(true);
+                    setUserData(decode);
+                    navigate('/');
+                } catch (error) {
+                    setErrors({ general: 'An error occurred during login. Please try again.' });
+                }
+            } else {
+                setErrors({ general: data.message });
+            }
         } catch (error) {
-
+            if (error.response && error.response.status === 404) {
+                setErrors({ general: 'User did not exists.' });
+            } else {
+                setErrors({ general: 'An error occurred during login. Please try again.' });
+            }
+        } finally {
+            setLoading(false);
         }
 
     }
     return (
         <div className=" bg-slate-400 container w-max mx-auto py-4 px-5 rounded-lg md:px-8 md:py-8">
             <form className="w-full" onSubmit={handleLogin}>
+            <div className='flex justify-center items-center'>
+                    <select
+                        name="category"
+                        id="category"
+                        className='rounded-md font-bold bg-slate-600 text-white px-2 py-1 outline-none'
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                    >
+                        <option value="youtuber">Youtuber</option>
+                        <option value="editor">Editor</option>
+                    </select>
+                </div>
                 <div className="mb-4">
                     <label className="block text-black text-sm font-bold font-sans mb-1" htmlFor="email">
                         Email
@@ -88,7 +133,7 @@ const LoginForm = () => {
                             {loading ? 'Creating Account' : 'Create Account'}
                         </button>
                     </div>
-                {/* {errors.general && <p className="text-red-500 text-xs italic mt-4">{errors.general}</p>} */}
+                {errors.general && <p className="text-red-500 text-xs italic mt-4">{errors.general}</p>}
             </form>
         </div>
     )

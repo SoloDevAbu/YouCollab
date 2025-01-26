@@ -48,7 +48,7 @@ const createYoutuber = async (req, res) => {
         res.status(201).cookie('token', token, {
             httpOnly: false,
             secure: false,
-            sameSite: 'strict',
+            sameSite: 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         });
 
@@ -82,7 +82,7 @@ const loginYoutuber = async (req, res) => {
 
         const youtuber = await Youtuber.findOne({email});
         if(!youtuber) {
-            return res.status(404).json({ message: 'Invalid email or password' });
+            return res.status(404).json({ message: 'Youtuber not found' });
         }
 
         const isMatched = await bcrypt.compare(password, youtuber.password);
@@ -104,7 +104,7 @@ const loginYoutuber = async (req, res) => {
         //     maxAge: 7 * 24 * 60 * 60 * 1000
         // })
         res.status(201).cookie('token', token, {
-            httpOnly: true,
+            httpOnly: false,
             secure: false,
             sameSite: 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days

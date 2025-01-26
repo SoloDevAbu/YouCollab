@@ -1,11 +1,13 @@
 import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
+import Cookies from 'js-cookie'
+import { jwtDecode } from 'jwt-decode';
 import { AppContext } from '../../context/AppContext';
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const SignupForm = () => {
-    const { isLoggedin, userData } = useContext(AppContext);
+    const { setIsLoggedin, setUserData } = useContext(AppContext);
 
     const [category, setCategory] = useState('youtuber');
 
@@ -47,40 +49,44 @@ const SignupForm = () => {
         try {
 
             axios.defaults.withCredentials = true;
+            let response;
+
             if (category === 'youtuber') {
-                const { data } = await axios.post(`${BACKEND_URL}/youtuber/signup`, {
+                response = await axios.post(`${BACKEND_URL}/youtuber/signup`, {
                     name,
                     email,
                     password
                 })
-
-                if (data.success) {
-                    // setIsLoggedin(true);
-                    // getuserData()
-                    navigate('/');
-                } else {
-                    alert(data.message)
-                }
             } else if (category === 'editor') {
-                const { data } = await axios.post(`${BACKEND_URL}/editor/signup`, {
+                response = await axios.post(`${BACKEND_URL}/editor/signup`, {
                     name,
                     email,
                     password
                 })
+            }
 
-                if (data.success) {
-                    // setIsLoggedin(true);
-                    // getuserData()
+            const { data } = response;
+            const token = Cookies.get('token')
+
+            if (data.success && token) {
+                try {
+                    const decode = jwtDecode(token)
+                    setIsLoggedin(true);
+                    setUserData(decode)
                     navigate('/');
-                } else {
-                    alert(data.message)
+                } catch (error) {
+                    setErrors({ general: 'An error occurred during signup. Please try again.' })
                 }
+            } else {
+                setErrors({ general: data.message });
             }
 
         } catch (error) {
-            console.error('Signup error:', error);
-            setErrors({ general: 'An error occurred during signup. Please try again.' });
-
+            if (error.response && error.response.status === 409) {
+                setErrors({ general: 'User already exists.' });
+            } else {
+                setErrors({ general: 'An error occurred during signup. Please try again.' });
+            }
         } finally {
             setLoading(false);
         }
@@ -153,7 +159,7 @@ const SignupForm = () => {
                     </button>
                 </div>
 
-                {errors.general && <p className="text-red-500 text-xs italic">{errors.general}</p>}
+                {errors.general && <p className="text-red-500 text-xs italic text-center py-1">{errors.general}</p>}
 
             </form>
         </div>
