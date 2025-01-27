@@ -8,6 +8,14 @@ const Navbar = () => {
   const { isLoggedin, userData } = useContext(AppContext);
   console.log('Navbar Context:', { isLoggedin, userData });
 
+  // const navigateToProfile = () => {
+  //   if(category === 'youtuber') {
+  //     navigate('/profile/youtuber');
+  //   } else if(category === 'editor') {
+  //     navigate('/profile/editor');
+  //   }
+  // }
+
   return (
     <div className="border-b-2 px-3 py-2 border-gray-400 bg-red-100 flex justify-between md:px-5 lg:px-8">
       {/* Logo and Title */}
@@ -27,7 +35,7 @@ const Navbar = () => {
           <div
             className="w-8 h-8 bg-blue-500 text-white font-sans font-bold rounded-full flex justify-center items-center cursor-pointer"
             title={userData?.name || "Profile"}
-            onClick={() => navigate("/profile")}
+            // onClick={() => navigateToProfile()}
           >
             {userData?.name?.charAt(0).toUpperCase() || "U"}
           </div>

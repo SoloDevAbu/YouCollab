@@ -1,16 +1,19 @@
-const mongoose = require('mongoose');
-const youtuberSchema = require('./models/youtuber.model');
-const editorSchema = require('./models/editor.model');
+import { connect, model } from 'mongoose';
+import youtuberSchema from './models/youtuber.model'
+import editorSchema from './models/editor.model';
+import videoSchema from './models/video.model';
 require('dotenv').config();
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
-mongoose.connect(MONGODB_URI);
+connect(MONGODB_URI);
 
-const Editor = mongoose.model('Editor', editorSchema);
-const Youtuber = mongoose.model('Youtuber', youtuberSchema);
+const Editor = model('Editor', editorSchema);
+const Youtuber = model('Youtuber', youtuberSchema);
+const Video = model('Video', videoSchema);
 
-module.exports = {
+export default {
     Editor,
-    Youtuber
+    Youtuber,
+    Video
 }

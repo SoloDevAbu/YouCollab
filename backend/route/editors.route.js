@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { createEditor, loginEditor, updateEditor, logoutEditor } = require('../controller/editor.controller');
+const { createEditor, loginEditor, updateEditor, logoutEditor } = require('../controller/editor.controller').default;
 const router = Router();
 
 router.post('/singup', createEditor);

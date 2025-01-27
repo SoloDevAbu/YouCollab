@@ -64,6 +64,7 @@ const LoginForm = () => {
                     const decode = jwtDecode(token);
                     setIsLoggedin(true);
                     setUserData(decode);
+                    // setUserCategory(category);
                     navigate('/');
                 } catch (error) {
                     setErrors({ general: 'An error occurred during login. Please try again.' });

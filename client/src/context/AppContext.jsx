@@ -8,6 +8,7 @@ export const AppContextProvider = (props) => {
 
     const [isLoggedin, setIsLoggedin] = useState(false);
     const [userData, setUserData] = useState(null);
+    // const [category, setUserCategory] = useState(null);
 
     useEffect(() => {
         const token = Cookies.get('token');
@@ -33,6 +34,8 @@ export const AppContextProvider = (props) => {
         setIsLoggedin,
         userData,
         setUserData,
+        // category,
+        // setUserCategory,
     }
     return (
         <AppContext.Provider value={value}>

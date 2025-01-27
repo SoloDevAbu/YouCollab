@@ -1,9 +1,11 @@
-const { Router } = require('express');
+import { Router } from 'express';
+import editorRoute from './editors.route';
+import youtuberRoute from './youtuber.route';
+import editorUploadVideoRoute from './editorUploadVideo.route'
 const router = Router();
-const editorRoute = require('./editors.route');
-const youtuberRoute = require('./youtuber.route');
 
 router.use('/editor', editorRoute);
 router.use('/youtuber', youtuberRoute);
+router.use('/video', editorUploadVideoRoute);
 
-module.exports = router;
+export default router;

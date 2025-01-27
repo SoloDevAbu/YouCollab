@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import { Schema } from 'mongoose';
 
-const editorSchema = new mongoose.Schema({
+const editorSchema = new Schema({
     name: {
         type: String,
         required: true,
@@ -35,12 +35,12 @@ const editorSchema = new mongoose.Schema({
         default: 0
     },
     youtuber: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Youtuber'
     },
     profileImage: {
         type: String
     },
-})
+}, {timestamps: true})
 
-module.exports = editorSchema;
+export default editorSchema;
