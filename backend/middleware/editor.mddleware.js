@@ -1,5 +1,7 @@
-import { verify } from 'jsonwebtoken';
-require('dotenv').config();
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -14,7 +16,7 @@ export const editorMiddleware = async (req, res, next) => {
     }
 
     try {
-        const decode = verify(token, JWT_SECRET);
+        const decode = jwt.verify(token, JWT_SECRET);
 
         req.editor = {
             editorId: decode.editorId

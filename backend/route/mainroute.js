@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import editorRoute from './editors.route';
-import youtuberRoute from './youtuber.route';
-import editorUploadVideoRoute from './editorUploadVideo.route'
+import editorRoute from './editors.route.js';
+import youtuberRoute from './youtuber.route.js';
+import editorUploadVideoRoute from './editorUploadVideo.route.js';
 const router = Router();
 
 router.use('/editor', editorRoute);

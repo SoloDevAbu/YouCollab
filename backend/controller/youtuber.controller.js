@@ -1,12 +1,13 @@
-const { Youtuber } = require("../db/db");
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const transporter = require("../config/nodemailer");
-require('dotenv').config();
+import { Youtuber } from '../db/db.js';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import transporter from '../config/nodemailer.js';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const createYoutuber = async (req, res) => {
+export const createYoutuber = async (req, res) => {
     const { name, email, password } = req.body;
 
     if(!name || !email || !password) {
@@ -70,7 +71,7 @@ const createYoutuber = async (req, res) => {
         return res.status(500).json({ success: false, error: error.message });
     }
 };
-const loginYoutuber = async (req, res) => {
+export const loginYoutuber = async (req, res) => {
     const {email, password} = req.body;
 
         if(!email || !password){
@@ -118,7 +119,7 @@ const loginYoutuber = async (req, res) => {
         return res.status(500).json({ success: false, error: error.message });
     }
 }
-const updateYoutuber = async (req, res) => {
+export const updateYoutuber = async (req, res) => {
     const { youtuberId } = req.youtuber;
 
     const {name, password, newPassword} = req.body;
@@ -161,7 +162,7 @@ const updateYoutuber = async (req, res) => {
     }
 }
 
-const logoutYoutuber = async (req, res) => {
+export const logoutYoutuber = async (req, res) => {
     try {
         res.clearCookie('token', {
             httpOnly: true,
@@ -181,7 +182,7 @@ const logoutYoutuber = async (req, res) => {
     }
 }
 
-const sendVerifyOtp = async (req, res) => {
+export const sendVerifyOtp = async (req, res) => {
 
     try {
         const {youtuberId} = req.youtuber;
@@ -221,7 +222,7 @@ const sendVerifyOtp = async (req, res) => {
     }
 }
 
-const verifyEmail = async (req, res) => {
+export const verifyEmail = async (req, res) => {
     const {youtuberId} = req.youtuber;
     const {otp} = req.body;
 
@@ -272,7 +273,7 @@ const verifyEmail = async (req, res) => {
     }
 }
 
-const isAuthenticated = async (req, res) => {
+export const isAuthenticated = async (req, res) => {
     try {
         return res.json({
             success: true,
@@ -283,7 +284,7 @@ const isAuthenticated = async (req, res) => {
     }
 }
 
-const sendResetOtp = async (req, res) => {
+export const sendResetOtp = async (req, res) => {
     const {email} = req.body;
 
     if(!email) {
@@ -328,7 +329,7 @@ const sendResetOtp = async (req, res) => {
     }
 }
 
-const resetPassword = async (req, res) => {
+export const resetPassword = async (req, res) => {
     const {email, otp, newPassword} = req.body;
 
     if(!email || !otp || !newPassword) {
@@ -380,7 +381,7 @@ const resetPassword = async (req, res) => {
     }
 }
 
-const getYoutuber = async (req, res) => {
+export const getYoutuber = async (req, res) => {
     const {youtuberId} = req.youtuber;
     try {
         const youtuber = await Youtuber.findById(youtuberId);
@@ -404,17 +405,4 @@ const getYoutuber = async (req, res) => {
         console.error(error);
         return res.status(500).json({ success: false, error: error.message });
     }
-}
-
-module.exports = {
-    createYoutuber,
-    loginYoutuber,
-    updateYoutuber,
-    logoutYoutuber,
-    sendVerifyOtp,
-    verifyEmail,
-    isAuthenticated,
-    sendResetOtp,
-    resetPassword,
-    getYoutuber,
 }

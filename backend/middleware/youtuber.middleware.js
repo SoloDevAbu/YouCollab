@@ -1,9 +1,10 @@
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const youtuberMiddleware = async (req, res, next) => {
+export const youtuberMiddleware = async (req, res, next) => {
     const token = req.cookies.token;
 
     if (!token) {
@@ -28,5 +29,3 @@ const youtuberMiddleware = async (req, res, next) => {
         });
       }
 }
-
-module.exports = youtuberMiddleware;

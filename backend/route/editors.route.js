@@ -1,10 +1,10 @@
-const { Router } = require('express');
-const { createEditor, loginEditor, updateEditor, logoutEditor } = require('../controller/editor.controller').default;
+import { Router } from 'express';
+import { createEditor, loginEditor, logoutEditor, updateEditor } from '../controller/editor.controller.js';
 const router = Router();
 
-router.post('/singup', createEditor);
+router.post('/signup', createEditor);
 router.post('/login', loginEditor);
 router.put('/update', updateEditor);
 router.post('/logout', logoutEditor);
 
-module.exports = router;
+export default router;

@@ -1,4 +1,4 @@
-import { Editor, Video } from "../db/db";
+import { Editor, Video } from "../db/db.js";
 
 export const uploadVideo = async (req, res) => {
     const {editorId} = req.editor;
@@ -17,7 +17,8 @@ export const uploadVideo = async (req, res) => {
         const video = await Video.create({
             title,
             description,
-            tags
+            tags,
+            editor: editorId
         })
 
         res.status(201).json({
@@ -51,7 +52,7 @@ export const editVideo = async(req, res) => {
             title,
             description,
             tags
-        })
+        }, {new: true})
 
         res.status(200).json({
             success: true,
@@ -81,7 +82,7 @@ export const deleteVideo = async(req, res) => {
         await Video.findByIdAndDelete(videoId);
 
         res.status(200).json({
-            success: false,
+            success: true,
             message: 'Video deleted successfully'
         })
     } catch (error) {

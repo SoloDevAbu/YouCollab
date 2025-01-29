@@ -1,6 +1,6 @@
-const { Router } = require('express');
-const { createYoutuber, loginYoutuber, updateYoutuber, logoutYoutuber, sendVerifyOtp, verifyEmail, isAuthenticated, sendResetOtp, resetPassword, getYoutuber } = require('../controller/youtuber.controller');
-const youtuberMiddleware = require('../middleware/youtuber.middleware');
+import { Router } from 'express';
+import { createYoutuber, loginYoutuber, updateYoutuber, logoutYoutuber, sendVerifyOtp, verifyEmail, isAuthenticated, sendResetOtp, resetPassword, getYoutuber } from '../controller/youtuber.controller.js';
+import {youtuberMiddleware} from '../middleware/youtuber.middleware.js';
 const router = Router();
 
 router.post('/signup', createYoutuber);
@@ -14,4 +14,4 @@ router.post('/sent-reset-otp', sendResetOtp);
 router.post('/reset-password', resetPassword);
 router.get('/profile', youtuberMiddleware, getYoutuber);
 
-module.exports = router;
+export default router;

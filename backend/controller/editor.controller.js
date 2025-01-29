@@ -1,13 +1,14 @@
-const { Editor } = require("../db/db");
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const transporter = require("../config/nodemailer");
+import dotenv from 'dotenv';
+dotenv.config();
 
-require('dotenv').config();
+import { Editor } from '../db/db.js';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import transporter from '../config/nodemailer.js';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const createEditor = async (req, res) => {
+export const createEditor = async (req, res) => {
     const { name, email, password } = req.body;
 
     if(!name || !email || !password) {
@@ -65,7 +66,7 @@ const createEditor = async (req, res) => {
     }
 };
 
-const loginEditor = async (req, res) => {
+export const loginEditor = async (req, res) => {
     const {email, password} = req.body;
 
     if(!email || !password){
@@ -108,7 +109,7 @@ const loginEditor = async (req, res) => {
     }
 };
 
-const updateEditor = async (req, res) => {
+export const updateEditor = async (req, res) => {
     const { editorId } = req.editor;
     const {name, password, newPassword} = req.body;
 
@@ -150,7 +151,7 @@ const updateEditor = async (req, res) => {
     }
 };
 
-const logoutEditor = async (req, res) => {
+export const logoutEditor = async (req, res) => {
     try {
         res.clearCookie('token', {
             httpOnly: true,
@@ -170,7 +171,7 @@ const logoutEditor = async (req, res) => {
     }
 };
 
-const sendVerifyOtp = async (req, res) => {
+export const sendVerifyOtp = async (req, res) => {
     try {
         const { editorId } = req.editor;
         const editor = await Editor.findById(editorId);
@@ -207,7 +208,7 @@ const sendVerifyOtp = async (req, res) => {
     }
 };
 
-const verifyEmail = async (req, res) => {
+export const verifyEmail = async (req, res) => {
     const { editorId } = req.editor;
     const { otp } = req.body;
 
@@ -258,7 +259,7 @@ const verifyEmail = async (req, res) => {
     }
 };
 
-const isAuthenticated = async (req, res) => {
+export const isAuthenticated = async (req, res) => {
     try {
         return res.json({
             success: true,
@@ -269,7 +270,7 @@ const isAuthenticated = async (req, res) => {
     }
 };
 
-const sendResetOtp = async (req, res) => {
+export const sendResetOtp = async (req, res) => {
     const { email } = req.body;
 
     if (!email) {
@@ -313,7 +314,7 @@ const sendResetOtp = async (req, res) => {
     }
 };
 
-const resetPassword = async (req, res) => {
+export const resetPassword = async (req, res) => {
     const { email, otp, newPassword } = req.body;
 
     if (!email || !otp || !newPassword) {
@@ -364,7 +365,7 @@ const resetPassword = async (req, res) => {
     }
 };
 
-const getEditor = async (req, res) => {
+export const getEditor = async (req, res) => {
     const { editorId } = req.editor;
     try {
         const editor = await Editor.findById(editorId);
@@ -388,17 +389,4 @@ const getEditor = async (req, res) => {
         console.error(error);
         return res.status(500).json({ success: false, error: error.message });
     }
-};
-
-export default {
-    createEditor,
-    loginEditor,
-    updateEditor,
-    logoutEditor,
-    sendVerifyOtp,
-    verifyEmail,
-    isAuthenticated,
-    sendResetOtp,
-    resetPassword,
-    getEditor
 };
