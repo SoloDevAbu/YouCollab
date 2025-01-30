@@ -55,13 +55,15 @@ const SignupForm = () => {
                 response = await axios.post(`${BACKEND_URL}/youtuber/signup`, {
                     name,
                     email,
-                    password
+                    password,
+                    userType: category
                 })
             } else if (category === 'editor') {
                 response = await axios.post(`${BACKEND_URL}/editor/signup`, {
                     name,
                     email,
-                    password
+                    password,
+                    userType: category
                 })
             }
 

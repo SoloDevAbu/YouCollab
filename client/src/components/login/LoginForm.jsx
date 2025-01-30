@@ -51,9 +51,9 @@ const LoginForm = () => {
             let response;
 
             if (category === 'youtuber') {
-                response = await axios.post(`${BACKEND_URL}/youtuber/login`, { email, password });
+                response = await axios.post(`${BACKEND_URL}/youtuber/login`, { email, password, userType: category });
             } else if (category === 'editor') {
-                response = await axios.post(`${BACKEND_URL}/editor/login`, { email, password });
+                response = await axios.post(`${BACKEND_URL}/editor/login`, { email, password, userType: category });
             }
 
             const { data } = response;
@@ -64,7 +64,6 @@ const LoginForm = () => {
                     const decode = jwtDecode(token);
                     setIsLoggedin(true);
                     setUserData(decode);
-                    // setUserCategory(category);
                     navigate('/');
                 } catch (error) {
                     setErrors({ general: 'An error occurred during login. Please try again.' });

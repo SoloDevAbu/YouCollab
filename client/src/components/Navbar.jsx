@@ -17,7 +17,7 @@ const Navbar = () => {
   // }
 
   return (
-    <div className="border-b-2 px-3 py-2 border-gray-400 bg-red-100 flex justify-between md:px-5 lg:px-8">
+    <div className="border-b-2 px-3 py-2 border-gray-400 bg-red-100 flex justify-between md:px-5 lg:px-8 fixed w-full z-50">
       {/* Logo and Title */}
       <div className="flex gap-2 items-center">
         <img src={logo} alt="Logo" className="size-6" />
