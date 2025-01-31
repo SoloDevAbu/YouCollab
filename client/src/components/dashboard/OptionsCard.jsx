@@ -1,8 +1,10 @@
 import React from 'react'
 
-const OptionsCard = ({logo, name}) => {
+const OptionsCard = ({logo, name, onClick}) => {
     return (
-        <div className='bg-gray-200 w-full mt-2 py-2 px-4 rounded-lg flex items-center cursor-pointer'>
+        <div className='bg-gray-200 w-full mt-2 py-2 px-4 rounded-lg flex items-center cursor-pointer'
+            onClick={onClick}
+        >
             <img src={logo} alt="Channel" className='h-6' />
             <h3 className='font-semibold mx-auto'>{name}</h3>
         </div>

@@ -1,0 +1,46 @@
+import React from 'react'
+
+const VideoComponent = ({thumbnail, title, description, tags, status}) => {
+    const getStatusColor = (status) => {
+        switch (status.toLowerCase()) {
+            case 'pending':
+            return 'text-yellow-500';
+            case 'rejected':
+            return 'text-red-500';
+            case 'approved':
+            return 'text-green-500';
+            default:
+            return 'text-blue-500';
+        }
+    };
+
+    return (
+        <div className='flex flex-col gap-4 bg-gray-100 rounded-lg m-2 p-2'>
+            <div className='flex justify-around bg-gray-300 p-4 rounded-lg gap-1'>
+                <img src={thumbnail} alt="" className='max-h-64' />
+                <div className='flex flex-col bg-gray-400 p-4 rounded-lg text-white font-semibold '>
+                    <h1>Uploaded at: 01/02/2025 5:13PM</h1>
+                    <p>Status: <span className={getStatusColor(status)}>{status}</span></p>
+                </div>
+            </div>
+            <div className='bg-gray-300 rounded-lg p-4'>
+                <h1 className='font-bold'>Title:</h1>
+                <p className='font-semibold'>{title}</p>
+                <h1 className='font-bold'>Description:</h1>
+                <p className='font-semibold'>{description}</p>
+                <h1 className='font-bold'>Tags:</h1>
+                <div className='flex gap-2 flex-wrap'>
+                    {Array.isArray(tags) && tags.length > 0 ? (
+                        tags.map((tag, index) => (
+                            <p key={index} className='bg-orange-200 px-2 py-1 rounded-lg my-1'>{tag}</p>
+                        ))
+                    ) : (
+                        <p className='bg-orange-200 px-2 py-1 rounded-lg my-1'>No Tag</p>
+                    )}
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export default VideoComponent

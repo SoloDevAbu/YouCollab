@@ -1,6 +1,6 @@
 import React from 'react'
 import EditorInfo from '../components/editor/EditorInfo'
-import EditorUpload from '../components/editor/EditorUpload'
+// import EditorUpload from '../components/editor/EditorUpload'
 
 const EditorProfile = () => {
   return (
@@ -9,7 +9,7 @@ const EditorProfile = () => {
         <EditorInfo/>
       </div>
       <div className='w-full md:w-3/4'>
-        <EditorUpload/>
+        {/* <EditorUpload/> */}
       </div>
     </div>
   )

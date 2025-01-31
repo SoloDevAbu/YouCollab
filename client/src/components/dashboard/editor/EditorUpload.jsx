@@ -1,11 +1,15 @@
 import React, { useState } from 'react'
-import uploadIcon from '../../assets/logo/upload.png'
+import uploadIcon from '../../../assets/logo/upload.png'
+import axios from 'axios';
 
 const EditorUpload = () => {
     const [title, setTitle] = useState(null);
     const [description, setDescription] = useState(null);
     const [tags, setTags] = useState([]);
     const [videoSrc, setVideoSrc] = useState(null);
+    const [errors, setErrors] = useState(null);
+
+    const backeendUrl = import.meta.env.VITE_BACKEND_URL;
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -34,8 +38,38 @@ const EditorUpload = () => {
     }
 
 
-    const uploadVideo = () => {
-        
+    const uploadVideo = async (e) => {
+        e.preventDefault();
+
+        const newErrors = {};
+        if (title === null) newErrors.title = 'Title is required';
+        if (description === null) newErrors.description = 'Description is required';
+        if (tags.length === 0) newErrors.tags = 'Tags are required';
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            return;
+        }
+
+        setErrors({});
+
+        try {
+            const response = await axios.post(`${backeendUrl}/video/editor/upload`, {
+                title,
+                description,
+                tags
+            }, {
+                withCredentials: true
+            })
+
+            if (response.data.success) {
+                console.log('Video uploaded successfully');
+            }
+            console.log(response.data);
+        } catch (error) {
+            setErrors(error.response.data.message)
+            console.log(errors);
+        }
     }
 
     return (
@@ -62,7 +96,7 @@ const EditorUpload = () => {
                     <div className='flex flex-col gap-3'>
                         <label htmlFor="text">Title <span className='text-red-500'>*</span></label>
                         <input type="text"
-                            className="rounded-md py-2 px-3 leading-ti</div>ght outline-none"
+                            className="rounded-md py-2 px-3 leading-tight outline-none"
                             name="title"
                             placeholder="Title of the video"
                             onChange={handleInputChange}
@@ -87,15 +121,15 @@ const EditorUpload = () => {
                         />
                     </div>
 
+                    <div className='flex justify-center'>
+                        <button
+                            className='bg-blue-500 px-6 py-2 rounded-lg mt-5 text-white font-sans font-semibold'
+                            type='submit'
+                        >
+                            Upload Video
+                        </button>
+                    </div>
                 </form>
-            </div>
-            <div className='flex justify-center'>
-                <button
-                    className='bg-blue-500 px-6 py-2 rounded-lg mt-5 text-white font-sans font-semibold'
-                    type='submit'
-                >
-                    Upload Video
-                </button>
             </div>
         </div>
     )

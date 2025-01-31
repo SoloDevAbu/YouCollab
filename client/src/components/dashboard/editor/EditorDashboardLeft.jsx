@@ -9,18 +9,23 @@ import settingLogo from '../../../assets/logo/settings.png'
 import recentLogo from '../../../assets/logo/recent.png'
 import { useNavigate } from 'react-router-dom'
 
-const EditorDashboardLeft = () => {
+const EditorDashboardLeft = ({setSearchParams}) => {
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+
+    const handleTabChange = (tab) => {
+        setSearchParams({tab});
+    }
+
     return (
         <div className='mx-4 flex flex-col h-screen'>
             <h1 className='text-lg font-bold mt-2'>Hi, Editor Name</h1>
-            <OptionsCard logo={ytLogo} name={'Youtuber Channel Name'} />
-            <OptionsCard logo={uploadLogo} name={'New Upload'} />
-            <OptionsCard logo={recentLogo} name={'Recent Upload'} />
-            <OptionsCard logo={approvedLogo} name={'Recent Approved'} />
-            <OptionsCard logo={pendingLogo} name={'Pending Approval'} />
-            <OptionsCard logo={rejectLogo} name={'Rejected Videos'} />
+            <OptionsCard logo={ytLogo} name={'Channel Name'}/>
+            <OptionsCard logo={uploadLogo} name={'New Upload'}  onClick={() => handleTabChange('new-upload')}/>
+            <OptionsCard logo={recentLogo} name={'Recent Upload'}  onClick={() => handleTabChange('recent-upload')}/>
+            <OptionsCard logo={approvedLogo} name={'Recent Approved'}  onClick={() => handleTabChange('recent-approved')}/>
+            <OptionsCard logo={pendingLogo} name={'Pending Approval'} onClick={() => handleTabChange('pending-approval')}/>
+            <OptionsCard logo={rejectLogo} name={'Rejected Videos'} onClick={() => handleTabChange('rejected')}/>
 
             <div className='bg-gray-200 mt-2 py-2 px-4 rounded-lg flex items-center fixed bottom-4 gap-4 cursor-pointer'
                 onClick={() => navigate('/editor/profile')}
