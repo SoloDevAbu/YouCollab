@@ -12,7 +12,7 @@ const RecentApproval = () => {
   useEffect(() => {
     const fetchRecentApprovedVideos = async () => {
       try {
-        const response = await axios.get(`${backendUrl}/video/editor/videos`, {
+        const response = await axios.get(`${backendUrl}/video/editor/approved-videos`, {
           withCredentials: true,
         });
 

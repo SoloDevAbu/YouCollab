@@ -129,7 +129,7 @@ const RecentUpload = () => {
                     </div>
                 ))
             ) : (
-                <p className='text-center text-gray-600'>No recent uploads found.</p>
+                <p className='text-center text-gray-500 font-bold'>No recent uploads found.</p>
             )}
         </div>
     );

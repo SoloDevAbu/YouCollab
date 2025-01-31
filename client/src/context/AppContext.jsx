@@ -9,6 +9,7 @@ export const AppContextProvider = (props) => {
     const [isLoggedin, setIsLoggedin] = useState(false);
     const [userData, setUserData] = useState(null);
     const [category, setUserCategory] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const token = Cookies.get('token');
@@ -26,6 +27,7 @@ export const AppContextProvider = (props) => {
         } else {
             console.log('No token found in cookies.');
         }
+        setLoading(false);
     }, []);
     
     
@@ -37,6 +39,7 @@ export const AppContextProvider = (props) => {
         setUserData,
         category,
         setUserCategory,
+        loading
     }
     return (
         <AppContext.Provider value={value}>
