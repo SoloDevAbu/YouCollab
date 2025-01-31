@@ -49,7 +49,7 @@ export const editVideo = async(req, res) => {
             })
         }
 
-        if(videoId !== video._id || video.editor._id !== editorId) {
+        if(video.editor.toString() !== editorId) {
             return res.status(409).json({
                 success: false,
                 message: 'You are not authorized'
@@ -113,7 +113,57 @@ export const getVideos = async (req, res) => {
     const {editorId} = req.editor;
 
     try {
-        const video = await Video.find({editor: editorId});
+        const video = await Video.find({editor: editorId}).sort({createdAt: -1});
+
+        if(!video) {
+            return res.status(404).json({
+                success: false,
+                message: 'No video found'
+            })
+        }
+
+        res.status(200).json({
+            success: true,
+            video
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message,
+        })
+    }
+}
+
+export const approvedVideos = async (req, res) => {
+    const {editorId} = req.editor;
+
+    try {
+        const video = await Video.find({editor: editorId, status: 'APPROVED'}).sort({createdAt: -1});
+
+        if(!video) {
+            return res.status(404).json({
+                success: false,
+                message: 'No video found'
+            })
+        }
+
+        res.status(200).json({
+            success: true,
+            video
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message,
+        })
+    }
+}
+
+export const rejectedVideos = async (req, res) => {
+    const {editorId} = req.editor;
+
+    try {
+        const video = await Video.find({editor: editorId, status: 'REJECTED'}).sort({createdAt: -1});
 
         if(!video) {
             return res.status(404).json({
