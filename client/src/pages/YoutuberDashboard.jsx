@@ -2,7 +2,7 @@ import React from 'react'
 
 const YoutuberDashboard = () => {
   return (
-    <div>YoutuberDashboard</div>
+    <div className='pt-12'>YoutuberDashboard</div>
   )
 }
 

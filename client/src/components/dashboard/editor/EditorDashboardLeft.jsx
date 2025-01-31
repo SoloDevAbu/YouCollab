@@ -7,8 +7,11 @@ import approvedLogo from '../../../assets/logo/check-mark.png'
 import rejectLogo from '../../../assets/logo/remove.png'
 import settingLogo from '../../../assets/logo/settings.png'
 import recentLogo from '../../../assets/logo/recent.png'
+import { useNavigate } from 'react-router-dom'
 
 const EditorDashboardLeft = () => {
+
+    const navigate = useNavigate()
     return (
         <div className='mx-4 flex flex-col h-screen'>
             <h1 className='text-lg font-bold mt-2'>Hi, Editor Name</h1>
@@ -19,7 +22,9 @@ const EditorDashboardLeft = () => {
             <OptionsCard logo={pendingLogo} name={'Pending Approval'} />
             <OptionsCard logo={rejectLogo} name={'Rejected Videos'} />
 
-            <div className='bg-gray-200 mt-2 py-2 px-4 rounded-lg flex items-center fixed bottom-4 gap-4'>
+            <div className='bg-gray-200 mt-2 py-2 px-4 rounded-lg flex items-center fixed bottom-4 gap-4 cursor-pointer'
+                onClick={() => navigate('/editor/profile')}
+            >
                 <img src={settingLogo} alt="Channel" className='h-6' />
                 <h3 className='font-semibold mx-auto'>Settings</h3>
             </div>

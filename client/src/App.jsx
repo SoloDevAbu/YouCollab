@@ -22,8 +22,8 @@ export default function App() {
           <Route path="/login" element={<SinginPage/>}/>
           <Route path="/signup" element={<SingupPage/>}/>
           <Route path="/dashboard" element={isLoggedin ? (category === "youtuber" ? <YoutuberDashboard /> : <EditorDashboard />) : <Home />} />
-          <Route path="/profile/editor" element={<EditorProfile/>}/>
-          <Route path="/profile/youtuber" element={<YoutuberProfile/>}/>
+          <Route path="/editor/profile" element={<EditorProfile/>}/>
+          <Route path="/youtuber/profile" element={<YoutuberProfile/>}/>
         </Routes>
       </Suspense>
     </div>
