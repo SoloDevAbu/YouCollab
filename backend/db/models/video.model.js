@@ -21,6 +21,11 @@ const videoSchema = new Schema({
     youtuber: {
         type: Schema.Types.ObjectId,
         ref: 'Youtuber'
+    },
+    status: {
+        type: String,
+        enum: ['PENDING', 'APPROVED', 'REJECTED'],
+        default: 'PENDING'
     }
 }, {timestamps: true})
 

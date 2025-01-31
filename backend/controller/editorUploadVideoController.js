@@ -108,3 +108,28 @@ export const deleteVideo = async(req, res) => {
         })
     }
 }
+
+export const getVideos = async (req, res) => {
+    const {editorId} = req.editor;
+
+    try {
+        const video = await Video.find({editor: editorId});
+
+        if(!video) {
+            return res.status(404).json({
+                success: false,
+                message: 'No video found'
+            })
+        }
+
+        res.status(200).json({
+            success: true,
+            video
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message,
+        })
+    }
+}
