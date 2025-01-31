@@ -9,17 +9,17 @@ import transporter from '../config/nodemailer.js';
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export const createEditor = async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password, userType } = req.body;
 
-    if(!name || !email || !password) {
+    if (!name || !email || !password) {
         return res.status(400).json({
             message: "Provide all the details"
         });
     }
 
     try {
-        const existingEditor = await Editor.findOne({email});
-        if(existingEditor) {
+        const existingEditor = await Editor.findOne({ email });
+        if (existingEditor) {
             return res.status(409).json({
                 success: false,
                 message: 'Editor already exists'
@@ -35,9 +35,9 @@ export const createEditor = async (req, res) => {
         });
 
         const token = jwt.sign(
-            {editorId: editor._id, name: editor.name, email: editor.email}, 
-            JWT_SECRET, 
-            {expiresIn: '7d'}
+            { editorId: editor._id, name: editor.name, email: editor.email, userType },
+            JWT_SECRET,
+            { expiresIn: '7d' }
         );
 
         res.status(201).cookie('token', token, {
@@ -59,7 +59,7 @@ export const createEditor = async (req, res) => {
         return res.json({
             success: true,
             message: 'Editor created successfully',
-        });        
+        });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ success: false, error: error.message });
@@ -67,17 +67,17 @@ export const createEditor = async (req, res) => {
 };
 
 export const loginEditor = async (req, res) => {
-    const {email, password} = req.body;
+    const { email, password, userType } = req.body;
 
-    if(!email || !password){
+    if (!email || !password) {
         return res.status(400).json({
             message: 'Email and Password are required'
         });
     }
 
     try {
-        const editor = await Editor.findOne({email});
-        if(!editor) {
+        const editor = await Editor.findOne({ email });
+        if (!editor) {
             return res.status(404).json({ message: 'Editor not found' });
         }
 
@@ -88,9 +88,9 @@ export const loginEditor = async (req, res) => {
         }
 
         const token = jwt.sign(
-            {editorId: editor._id, name: editor.name, email: editor.email}, 
-            JWT_SECRET, 
-            {expiresIn: '7d'}
+            { editorId: editor._id, name: editor.name, email: editor.email, userType },
+            JWT_SECRET,
+            { expiresIn: '7d' }
         );
 
         res.status(201).cookie('token', token, {
@@ -111,16 +111,16 @@ export const loginEditor = async (req, res) => {
 
 export const updateEditor = async (req, res) => {
     const { editorId } = req.editor;
-    const {name, password, newPassword} = req.body;
+    const { name, password, newPassword } = req.body;
 
     try {
         const editor = await Editor.findById(editorId);
-        if(!editor) {
+        if (!editor) {
             return res.status(404).json({ message: 'Editor not found' });
         }
 
-        if(newPassword) {
-            if(!password) {
+        if (newPassword) {
+            if (!password) {
                 return res.status(400).json({
                     message: 'Current password is required to set a new password.'
                 });

@@ -8,17 +8,17 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export const createYoutuber = async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password, userType } = req.body;
 
-    if(!name || !email || !password) {
+    if (!name || !email || !password) {
         return res.status(400).json({
             mdg: "provide all the details"
         })
     }
 
     try {
-        const existingYoutuber = await Youtuber.findOne({email});
-        if(existingYoutuber) {
+        const existingYoutuber = await Youtuber.findOne({ email });
+        if (existingYoutuber) {
             return res.status(409).json({
                 success: false,
                 message: 'User already exists'
@@ -34,9 +34,9 @@ export const createYoutuber = async (req, res) => {
         })
 
         const token = jwt.sign(
-            {youtuberId: youtuber._id, name: youtuber.name, email: youtuber.email}, 
-            JWT_SECRET, 
-            {expiresIn: '7d'}
+            { youtuberId: youtuber._id, name: youtuber.name, email: youtuber.email, userType },
+            JWT_SECRET,
+            { expiresIn: '7d' }
         )
 
         // res.status(201).cookie('token', token, {
@@ -65,24 +65,24 @@ export const createYoutuber = async (req, res) => {
         return res.json({
             success: true,
             message: 'User created successfully',
-        });        
+        });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ success: false, error: error.message });
     }
 };
 export const loginYoutuber = async (req, res) => {
-    const {email, password} = req.body;
+    const { email, password, userType } = req.body;
 
-        if(!email || !password){
-            return res.status(400).json({
-                message: 'Email and Password are required'
-            })
-        }
+    if (!email || !password) {
+        return res.status(400).json({
+            message: 'Email and Password are required'
+        })
+    }
     try {
 
-        const youtuber = await Youtuber.findOne({email});
-        if(!youtuber) {
+        const youtuber = await Youtuber.findOne({ email });
+        if (!youtuber) {
             return res.status(404).json({ message: 'Youtuber not found' });
         }
 
@@ -93,9 +93,9 @@ export const loginYoutuber = async (req, res) => {
         }
 
         const token = jwt.sign(
-            {youtuberId: youtuber._id, name: youtuber.name, email: youtuber.email}, 
-            JWT_SECRET, 
-            {expiresIn: '7d'}
+            { youtuberId: youtuber._id, name: youtuber.name, email: youtuber.email, userType },
+            JWT_SECRET,
+            { expiresIn: '7d' }
         )
 
         // res.status(201).cookie('token', token, {
@@ -110,7 +110,7 @@ export const loginYoutuber = async (req, res) => {
             sameSite: 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         });
-        
+
         return res.json({
             success: true,
             message: 'User signed in successfully',
@@ -122,16 +122,16 @@ export const loginYoutuber = async (req, res) => {
 export const updateYoutuber = async (req, res) => {
     const { youtuberId } = req.youtuber;
 
-    const {name, password, newPassword} = req.body;
+    const { name, password, newPassword } = req.body;
 
     try {
         const youtuber = await Youtuber.findById(youtuberId)
-        if(!youtuber) {
+        if (!youtuber) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        if(newPassword) {
-            if(!password) {
+        if (newPassword) {
+            if (!password) {
                 return res.status(400).json({
                     message: 'Current password is required to set a new password.'
                 });
@@ -185,11 +185,11 @@ export const logoutYoutuber = async (req, res) => {
 export const sendVerifyOtp = async (req, res) => {
 
     try {
-        const {youtuberId} = req.youtuber;
+        const { youtuberId } = req.youtuber;
 
         const youtuber = await Youtuber.findById(youtuberId);
 
-        if(youtuber.isAccountVerified) {
+        if (youtuber.isAccountVerified) {
             return res.json({
                 success: true,
                 message: 'Account already verified'
@@ -199,7 +199,7 @@ export const sendVerifyOtp = async (req, res) => {
         const otp = String(Math.floor(100000 + Math.random() * 900000));
 
         youtuber.verifyOtp = otp;
-        youtuber.verifyOtpExpiredAt = Date.now() + ( 5 * 60 * 1000);
+        youtuber.verifyOtpExpiredAt = Date.now() + (5 * 60 * 1000);
 
         await youtuber.save();
 
@@ -223,10 +223,10 @@ export const sendVerifyOtp = async (req, res) => {
 }
 
 export const verifyEmail = async (req, res) => {
-    const {youtuberId} = req.youtuber;
-    const {otp} = req.body;
+    const { youtuberId } = req.youtuber;
+    const { otp } = req.body;
 
-    if(!youtuberId || !otp) {
+    if (!youtuberId || !otp) {
         return res.json({
             success: false,
             message: 'Missing details'
@@ -236,21 +236,21 @@ export const verifyEmail = async (req, res) => {
     try {
         const youtuber = await Youtuber.findById(youtuberId);
 
-        if(!youtuber) {
+        if (!youtuber) {
             return res.json({
                 success: false,
                 message: 'User not found'
             })
         }
 
-        if(youtuber.verifyOtp === '' || youtuber.verifyOtp !== otp) {
+        if (youtuber.verifyOtp === '' || youtuber.verifyOtp !== otp) {
             return res.json({
                 success: false,
                 message: 'Invalid OTP'
             })
         }
 
-        if(youtuber.verifyOtpExpiredAt < Date.now()) {
+        if (youtuber.verifyOtpExpiredAt < Date.now()) {
             return res.json({
                 success: false,
                 message: 'OTP Expired'
@@ -285,9 +285,9 @@ export const isAuthenticated = async (req, res) => {
 }
 
 export const sendResetOtp = async (req, res) => {
-    const {email} = req.body;
+    const { email } = req.body;
 
-    if(!email) {
+    if (!email) {
         return res.json({
             success: false,
             message: 'Email is required'
@@ -295,8 +295,8 @@ export const sendResetOtp = async (req, res) => {
     }
 
     try {
-        const youtuber = await Youtuber.findOne({email});
-        if(!user) {
+        const youtuber = await Youtuber.findOne({ email });
+        if (!user) {
             return res.json({
                 success: false,
                 message: 'User not found'
@@ -306,7 +306,7 @@ export const sendResetOtp = async (req, res) => {
         const otp = String(Math.floor(100000 + Math.random() * 900000));
 
         youtuber.verifyOtp = otp;
-        youtuber.verifyOtpExpiredAt = Date.now() + ( 5 * 60 * 1000);
+        youtuber.verifyOtpExpiredAt = Date.now() + (5 * 60 * 1000);
 
         await youtuber.save();
 
@@ -330,9 +330,9 @@ export const sendResetOtp = async (req, res) => {
 }
 
 export const resetPassword = async (req, res) => {
-    const {email, otp, newPassword} = req.body;
+    const { email, otp, newPassword } = req.body;
 
-    if(!email || !otp || !newPassword) {
+    if (!email || !otp || !newPassword) {
         return res.json({
             success: false,
             message: 'All the fields are required'
@@ -340,23 +340,23 @@ export const resetPassword = async (req, res) => {
     }
 
     try {
-        const youtuber = await Youtuber.findOne({email});
+        const youtuber = await Youtuber.findOne({ email });
 
-        if(!youtuber) {
+        if (!youtuber) {
             return res.json({
                 success: false,
                 message: 'User not found'
             })
         }
 
-        if(youtuber.resetOtp === '' || youtuber.resetOtp !== otp) {
+        if (youtuber.resetOtp === '' || youtuber.resetOtp !== otp) {
             return res.json({
                 success: false,
                 message: 'Invalid OTP'
             })
         }
 
-        if(youtuber.resetOtpExpiredAt < Date.now()) {
+        if (youtuber.resetOtpExpiredAt < Date.now()) {
             return res.json({
                 success: false,
                 message: 'OTP expired'
@@ -382,11 +382,11 @@ export const resetPassword = async (req, res) => {
 }
 
 export const getYoutuber = async (req, res) => {
-    const {youtuberId} = req.youtuber;
+    const { youtuberId } = req.youtuber;
     try {
         const youtuber = await Youtuber.findById(youtuberId);
 
-        if(!youtuber) {
+        if (!youtuber) {
             return res.json({
                 success: false,
                 message: 'User not found'

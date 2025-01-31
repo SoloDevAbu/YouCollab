@@ -37,6 +37,7 @@ export const uploadVideo = async (req, res) => {
 
 export const editVideo = async(req, res) => {
     const {videoId} = req.params;
+    const {editorId} = req.editor;
     const {title, description, tags} = req.body;
 
     try {
@@ -45,6 +46,13 @@ export const editVideo = async(req, res) => {
             return res.status(404).json({
                 success: false,
                 message: 'Video not found'
+            })
+        }
+
+        if(videoId !== video._id || video.editor._id !== editorId) {
+            return res.status(409).json({
+                success: false,
+                message: 'You are not authorized'
             })
         }
 
@@ -68,6 +76,7 @@ export const editVideo = async(req, res) => {
 
 export const deleteVideo = async(req, res) => {
     const {videoId} = req.params;
+    const {editorId} = req.editor;
 
     try {
         const video = await Video.findById(videoId);
@@ -76,6 +85,13 @@ export const deleteVideo = async(req, res) => {
             return res.status(404).json({
                 success: false,
                 message: 'No video found'
+            })
+        }
+
+        if(videoId !== video._id || video.editor._id !== editorId) {
+            return res.status(409).json({
+                success: false,
+                message: 'You are not authorized'
             })
         }
 

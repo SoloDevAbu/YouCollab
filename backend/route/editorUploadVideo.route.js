@@ -4,8 +4,8 @@ import { editorMiddleware } from '../middleware/editor.mddleware.js';
 
 const router = Router();
 
-router.post('/editorupload', editorMiddleware, uploadVideo);
-router.post('/editor/edit', editorMiddleware, editVideo);
-router.delete('/editor/delete', editorMiddleware, deleteVideo);
+router.post('/editor/upload', editorMiddleware, uploadVideo);
+router.post('/editor/edit/:videoId', editorMiddleware, editVideo);
+router.delete('/editor/delete/:videoId', editorMiddleware, deleteVideo);
 
 export default router;
