@@ -1,100 +1,138 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
-import thumbnail from '../../../assets/Untitled (2).png'
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import thumbnail from '../../../assets/Untitled (2).png';
 import VideoComponent from './VideoComponent';
 
 const RecentUpload = () => {
-    const [title, setTitle] = useState(['']);
-    const [description, setDescription] = useState(['']);
-    const [tags, setTags] = useState([]);
-    const [status, setStatus] = useState('PENDING');
-    const [isEditing, setIsEditing] = useState(false);
-    const [editTitle, setEditTitle] = useState({title});
-    const [editDescription, setEditDescription] = useState({description});
-    const [editTags, setEditTags] = useState({tags});
+    const [videos, setVideos] = useState([]);
+    const [editingVideoId, setEditingVideoId] = useState(null);
+    const [editVideo, setEditVideo] = useState(null);
 
-    const backeendUrl = import.meta.env.VITE_BACKEND_URL;
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-    const handleEditClick = () => {
-        setIsEditing(true);
-    };
-
-    const handleSaveClick = () => {
-        setIsEditing(false);
-        //Call the backend and edit the meta data of the uploaded video
-    };
-
-    useEffect(() => {
-        if (isEditing) {
-            document.getElementById('edit-section').scrollIntoView({ behavior: 'smooth' });
-        }
-    }, [isEditing])
-
+    // Fetch videos from backend
     useEffect(() => {
         const fetchRecentVideos = async () => {
             try {
-                const videos = await axios.get(`${backeendUrl}/video/editor/videos`, {
+                const response = await axios.get(`${backendUrl}/video/editor/videos`, {
                     withCredentials: true,
                 });
 
-                if(videos.data.success) {
-                    setTitle(videos.data.video.title);
-                    setDescription(videos.data.video.description);
-                    setStatus(videos.data.status);
-                    if (Array.isArray(videos.data.video.tags)) {
-                        setTags(videos.data.video.tags);
-                    } else {
-                        setTags([]);
-                    }
+                if (response.data.success) {
+                    setVideos(response.data.video);
                 }
             } catch (error) {
-                console.log(error);
+                console.error('Error fetching videos:', error);
+            }
+        };
+
+        fetchRecentVideos();
+    }, []);
+
+    const handleEditClick = (video) => {
+        if (video.status !== 'PENDING') {
+            alert('Editing is only allowed for videos with PENDING status.');
+            return;
+        }
+
+        setEditingVideoId(video._id);
+        setEditVideo({ ...video });
+    };
+
+    const handleSaveClick = () => {
+        
+        const updateVideo = async () => {
+            try {
+                const response = await axios.put(`${backendUrl}/video/editor/edit/${editingVideoId}`, {
+                    title: editVideo.title,
+                    description: editVideo.description,
+                    tags: editVideo.tags
+                }, {
+                    withCredentials: true
+                })
+                if(response.data.success) {
+                    // alert('video updated successfully')
+                    const updatedResponse = await axios.get(`${backendUrl}/video/editor/videos`, {
+                        withCredentials: true,
+                    });
+        
+                    if (updatedResponse.data.success) {
+                        setVideos(updatedResponse.data.video);
+                    }
+                    setEditingVideoId(null);
+                }
+            } catch (error) {
+                console.error('Error updating video', error)
+                alert(error.response?.data?.message || "Something went wrong");
             }
         }
-        fetchRecentVideos();
-    }, [])
-
+        updateVideo();
+    };
 
     return (
         <div className='flex flex-col gap-6 bg-gray-200 m-4 p-4 rounded-lg'>
-            <VideoComponent thumbnail={thumbnail} title={title} description={description} tags={tags.length > 0 ? tags : ['No Tags']} status={'Pending'}/>
-            <div className='flex justify-center'>
-                <button className='bg-blue-500 rounded-lg px-6 py-2 text-white font-bold' onClick={handleEditClick}>Edit Video</button>
-            </div>
-            {isEditing && (
-                <div className='bg-gray-300 rounded-lg p-4 mt-4' id='edit-section'>
-                    <h1 className='font-bold'>Edit Title:</h1>
-                    <input
-                        type='text'
-                        value={title}
-                        onChange={(e) => setEditTitle(e.target.value)}
-                        className='w-full p-2 rounded-lg mb-4 outline-none'
-                    />
-                    <h1 className='font-bold'>Edit Description:</h1>
-                    <textarea
-                        value={description}
-                        onChange={(e) => setEditDescription(e.target.value)}
-                        className='w-full p-2 rounded-lg mb-4 outline-none'
-                    />
-                    <h1 className='font-bold'>Edit Tags:</h1>
-                    <input
-                        type='text'
-                        value={tags}
-                        onChange={(e) => setEditTags(e.target.value)}
-                        className='w-full p-2 rounded-lg mb-4 outline-none'
-                    />
-                    <div className='flex justify-center'>
-                        <button
-                            className='bg-green-500 rounded-lg px-6 py-2 text-white font-bold'
-                            onClick={handleSaveClick}
-                        >
-                            Submit
-                        </button>
+            {/* Render all videos */}
+            {videos.length > 0 ? (
+                videos.map((video) => (
+                    <div key={video._id} className='bg-white p-4 rounded-lg shadow-md'>
+                        <VideoComponent
+                            thumbnail={thumbnail}
+                            title={video.title}
+                            description={video.description}
+                            tags={video.tags.length > 0 ? video.tags : ['No Tags']}
+                            status={video.status}
+                        />
+                        {video.status === 'PENDING' && (
+                            <div className='flex justify-center mt-2'>
+                                <button
+                                    className='bg-blue-500 rounded-lg px-6 py-2 text-white font-bold'
+                                    onClick={() => handleEditClick(video)}
+                                >
+                                    Edit Video
+                                </button>
+                            </div>
+                        )}
+
+                        {/* edit section */}
+                        {editingVideoId === video._id && editVideo && (
+                            <div className='bg-gray-300 rounded-lg p-4 mt-4' id='edit-section'>
+                                <h1 className='font-bold'>Edit Title:</h1>
+                                <input
+                                    type='text'
+                                    value={editVideo.title}
+                                    onChange={(e) => setEditVideo({ ...editVideo, title: e.target.value })}
+                                    className='w-full p-2 rounded-lg mb-4 outline-none'
+                                />
+                                <h1 className='font-bold'>Edit Description:</h1>
+                                <textarea
+                                    value={editVideo.description}
+                                    onChange={(e) => setEditVideo({ ...editVideo, description: e.target.value })}
+                                    className='w-full p-2 rounded-lg mb-4 outline-none'
+                                />
+                                <h1 className='font-bold'>Edit Tags:</h1>
+                                <input
+                                    type='text'
+                                    value={editVideo.tags.join(', ')}
+                                    onChange={(e) => setEditVideo({ ...editVideo, tags: e.target.value.split(', ') })}
+                                    className='w-full p-2 rounded-lg mb-4 outline-none'
+                                />
+                                <div className='flex justify-center'>
+                                    <button
+                                        className='bg-green-500 rounded-lg px-6 py-2 text-white font-bold'
+                                        onClick={handleSaveClick}
+                                    >
+                                        Submit
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                     </div>
-                </div>
+                ))
+            ) : (
+                <p className='text-center text-gray-600'>No recent uploads found.</p>
             )}
         </div>
-    )
-}
+    );
+};
 
-export default RecentUpload
+export default RecentUpload;
