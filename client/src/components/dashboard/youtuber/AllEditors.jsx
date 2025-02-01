@@ -61,7 +61,9 @@ const AllEditors = () => {
     const removeEditor = (editorId) => {
         const deleteEditor = async () => {
             try {
-                const response = await axios.put(`${backendUrl}/youtuber/remove-editor/${editorId}`, {
+                const response = await axios.put(`${backendUrl}/youtuber/remove-editor/${editorId}`,
+                    {},
+                     {
                     withCredentials: true,
                 });
 

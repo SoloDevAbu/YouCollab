@@ -1,5 +1,30 @@
 import { Video } from "../db/db.js";
 
+export const getAllVideos = async (req, res) => {
+    const { youtuberId } = req.youtuber;
+
+    try {
+        const video = await Video.find({ youtuber: youtuberId }).sort({ createdAt: -1 });
+
+        if (!video) {
+            return res.status(404).json({
+                success: false,
+                message: 'No video found'
+            })
+        }
+
+        res.status(200).json({
+            success: true,
+            video
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message,
+        })
+    }
+}
+
 export const getRecentVideos = async (req, res) => {
     const { youtuberId } = req.youtuber;
 
@@ -57,9 +82,9 @@ export const getRejectedVideos = async (req, res) => {
     const { youtuberId } = req.youtuber;
 
     try {
-        const video = await Video.find({youtuber: youtuberId, status: 'REJECTED'}).sort({createdAt: -1});
+        const video = await Video.find({ youtuber: youtuberId, status: 'REJECTED' }).sort({ createdAt: -1 });
 
-        if(!video) {
+        if (!video) {
             return res.status(404).json({
                 success: false,
                 message: 'No video found'
@@ -79,21 +104,21 @@ export const getRejectedVideos = async (req, res) => {
 }
 
 export const updateVideo = async (req, res) => {
-    const {videoId} = req.params;
-    const {editorId} = req.youtuber;
-    const {title, description, tags} = req.body;
+    const { videoId } = req.params;
+    const { editorId } = req.youtuber;
+    const { title, description, tags } = req.body;
 
     try {
         const video = await Video.findById(videoId)
 
-        if(!video) {
+        if (!video) {
             return res.status(404).json({
                 success: false,
                 message: 'No video found'
             })
         }
 
-        if(video.youtuber.toString() !== youtuberId) {
+        if (video.youtuber.toString() !== youtuberId) {
             return res.status(409).json({
                 success: false,
                 message: 'You are not Authorized'
@@ -104,7 +129,7 @@ export const updateVideo = async (req, res) => {
             title,
             description,
             tags
-        }, {new: true})
+        }, { new: true })
 
         res.status(200).json({
             success: true,
@@ -119,20 +144,20 @@ export const updateVideo = async (req, res) => {
 }
 
 export const confirmVideo = async (req, res) => {
-    const {youtuberId} = req.youtuber;
-    const {videoId} = req.params;
+    const { youtuberId } = req.youtuber;
+    const { videoId } = req.params;
 
     try {
         const video = await Video.findById(videoId);
 
-        if(!video) {
+        if (!video) {
             return res.status(404).json({
                 success: false,
                 message: 'No video Found'
             })
         }
 
-        if(video.youtuber.toString() !== youtuberId) {
+        if (video.youtuber.toString() !== youtuberId) {
             return res.status(409).json({
                 success: false,
                 message: 'You are not authorized'

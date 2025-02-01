@@ -29,21 +29,17 @@ const RejectVideos = () => {
 
   return (
     <div className='flex flex-col gap-6 bg-gray-200 m-4 p-4 rounded-lg'>
-      {videos.filter(video => video.status === "REJECTED").length > 0 ? (
-        videos
-          .filter(video => video.status === "REJECTED")
-          .map(video => (
-            <div key={video._id} className="bg-white p-4 rounded-lg shadow-md">
-              <VideoComponent
-                thumbnail={thumbnail}
-                title={video.title}
-                description={video.description}
-                tags={video.tags.length > 0 ? video.tags : ['No Tags']}
-                status={video.status}
-              />
-            </div>
-          ))
-      ) : (
+      {videos.length > 0 ? videos.map(video => (
+        <div key={video._id} className="bg-white p-4 rounded-lg shadow-md">
+          <VideoComponent
+            thumbnail={thumbnail}
+            title={video.title}
+            description={video.description}
+            tags={video.tags.length > 0 ? video.tags : ['No Tags']}
+            status={video.status}
+          />
+        </div>
+      )) : (
         <p className="text-center text-gray-500 font-bold">No rejected videos available.</p>
       )}
     </div>

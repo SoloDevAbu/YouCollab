@@ -13,7 +13,7 @@ const RecentUpload = () => {
     useEffect(() => {
         const fetchRecentVideos = async () => {
             try {
-                const response = await axios.get(`${backendUrl}/video/editor/videos`, {
+                const response = await axios.get(`${backendUrl}/video/youtuber/recent-videos`, {
                     withCredentials: true,
                 });
 
@@ -42,7 +42,7 @@ const RecentUpload = () => {
 
         const updateVideo = async () => {
             try {
-                const response = await axios.put(`${backendUrl}/video/editor/edit/${editingVideoId}`, {
+                const response = await axios.put(`${backendUrl}/video/youtuber/edit/${editingVideoId}`, {
                     title: editVideo.title,
                     description: editVideo.description,
                     tags: editVideo.tags
@@ -51,7 +51,7 @@ const RecentUpload = () => {
                 })
                 if (response.data.success) {
                     // alert('video updated successfully')
-                    const updatedResponse = await axios.get(`${backendUrl}/video/editor/videos`, {
+                    const updatedResponse = await axios.get(`${backendUrl}/video/youtuber/recent-videos`, {
                         withCredentials: true,
                     });
 
