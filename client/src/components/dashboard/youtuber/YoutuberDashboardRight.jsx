@@ -2,7 +2,9 @@ import React from 'react'
 
 const YoutuberDashboardRight = () => {
   return (
-    <div>YoutuberDashboardRight</div>
+    <div>
+      
+    </div>
   )
 }
 
