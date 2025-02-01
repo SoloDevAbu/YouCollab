@@ -20,7 +20,7 @@ const YoutuberDashboardLeft = ({setSearchParams}) => {
   return (
     <div className='mx-4 flex flex-col h-screen'>
       <h1 className='text-lg font-bold mt-2'>Hi, Youtuber Name</h1>
-      <OptionsCard logo={editorLogo} name={'Editors'} />
+      <OptionsCard logo={editorLogo} name={'Editors'} onClick={() => handleTabChange('editors')}/>
       <OptionsCard logo={recentLogo} name={'Recent Uploads'} onClick={() => handleTabChange('recent-uploads')} />
       <OptionsCard logo={alluploads} name={'All Uploads'} onClick={() => handleTabChange('all-uploads')} />
       <OptionsCard logo={pendingLogo} name={'Pending Approvals'} onClick={() => handleTabChange('pending-approval')} />
