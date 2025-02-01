@@ -1,4 +1,4 @@
-import { Youtuber } from '../db/db.js';
+import { Editor, Youtuber } from '../db/db.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import transporter from '../config/nodemailer.js';
@@ -400,6 +400,94 @@ export const getYoutuber = async (req, res) => {
                 email: youtuber.email,
                 isAccountVerified: youtuber.isAccountVerified
             }
+        })
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, error: error.message });
+    }
+}
+
+export const addEditor = async (req, res) => {
+    const { editorEmail } = req.body;
+    const { youtuberId } = req.youtuber;
+
+    try {
+        const editor = await Editor.findOne({ email: editorEmail });
+
+        if (!editor) {
+            return res.status(404).json({
+                success: false,
+                message: 'No Editor Found'
+            });
+        }
+
+        await Youtuber.findByIdAndUpdate(youtuberId, {
+            $addToSet: { editors: editor._id }
+        });
+
+        res.status(200).json({
+            success: true,
+            message: 'Editor Added Successfully'
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+export const getEditors = async (req, res) => {
+    const { youtuberId } = req.youtuber;
+    try {
+        const youtuber = await Youtuber.findById(youtuberId).populate('editors', '_id name email');
+
+        if (!youtuber) {
+            return res.status(404).json({
+                success: false,
+                message: 'YouTuber not found'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            editors: youtuber.editors
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+export const removeEditor = async (req, res) => {
+    const {editorId} = req.params;
+    const { youtuberId } = req.youtuber;
+
+    try {
+        const youtuber = await Youtuber.findById(youtuberId);
+
+        if(!youtuber) {
+            return res.status(404).json({
+                success: false,
+                message: 'No Youtuber Found'
+            })
+        }
+
+        if (!youtuber.editors.includes(editorId)) {
+            return res.status(404).json({
+                success: false,
+                message: 'Editor not found in the list'
+            });
+        }
+
+        await Youtuber.findByIdAndUpdate(
+            youtuberId,
+            { $pull: { editors: editorId } },
+            { new: true }
+        );
+
+        res.status(200).json({
+            success: true,
+            message: 'Editor Removed Successfully'
         })
     } catch (error) {
         console.error(error);
