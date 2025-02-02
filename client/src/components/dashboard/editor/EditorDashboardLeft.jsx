@@ -11,9 +11,12 @@ import { useNavigate } from 'react-router-dom'
 
 const EditorDashboardLeft = ({setSearchParams}) => {
 
+    const [selectedTab, setSelectedTab] = useState('recent-upload');
+
     const navigate = useNavigate();
 
     const handleTabChange = (tab) => {
+        setSelectedTab(tab);
         setSearchParams({tab});
     }
 
@@ -21,11 +24,11 @@ const EditorDashboardLeft = ({setSearchParams}) => {
         <div className='mx-4 flex flex-col h-screen'>
             <h1 className='text-lg font-bold mt-2'>Hi, Editor Name</h1>
             <OptionsCard logo={ytLogo} name={'Channel Name'}/>
-            <OptionsCard logo={uploadLogo} name={'New Upload'}  onClick={() => handleTabChange('new-upload')}/>
-            <OptionsCard logo={recentLogo} name={'Recent Upload'}  onClick={() => handleTabChange('recent-upload')}/>
-            <OptionsCard logo={approvedLogo} name={'Recent Approved'}  onClick={() => handleTabChange('recent-approved')}/>
-            <OptionsCard logo={pendingLogo} name={'Pending Approval'} onClick={() => handleTabChange('pending-approval')}/>
-            <OptionsCard logo={rejectLogo} name={'Rejected Videos'} onClick={() => handleTabChange('rejected')}/>
+            <OptionsCard logo={uploadLogo} name={'New Upload'}  onClick={() => handleTabChange('new-upload')} isSelected={selectedTab === 'new-upload'}/>
+            <OptionsCard logo={recentLogo} name={'Recent Upload'}  onClick={() => handleTabChange('recent-upload')} isSelected={selectedTab === 'recent-upload'}/>
+            <OptionsCard logo={approvedLogo} name={'Recent Approved'}  onClick={() => handleTabChange('recent-approved')} isSelected={selectedTab === 'recent-approved'}/>
+            <OptionsCard logo={pendingLogo} name={'Pending Approval'} onClick={() => handleTabChange('pending-approval')} isSelected={selectedTab === 'pending-approval'}/>
+            <OptionsCard logo={rejectLogo} name={'Rejected Videos'} onClick={() => handleTabChange('rejected')} isSelected={selectedTab === 'rejected'}/>
 
             <div className='bg-gray-200 mt-2 py-2 px-4 rounded-lg flex items-center fixed bottom-4 gap-4 cursor-pointer'
                 onClick={() => navigate('/editor/profile')}

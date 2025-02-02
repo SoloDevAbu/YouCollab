@@ -13,7 +13,7 @@ const YoutuberDashboard = () => {
       <div className='hidden md:block md:w-1/4'>
         <YoutuberDashboardLeft setSearchParams={setSearchParams} />
       </div>
-      <div className='hidden md:w-px bg-gray-300 mx-4 h-screen'></div>
+      <div className='hidden md:block md:w-0.5 bg-gray-500 mx-4 h-screen'></div>
       <div className='md:w-3/4'>
         <YoutuberDashboardRight selectedOption={selectedOption} />
       </div>
