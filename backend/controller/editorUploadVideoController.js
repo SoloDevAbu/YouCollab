@@ -1,4 +1,4 @@
-import { Editor, Video } from "../db/db.js";
+import { Editor, Video, Youtuber } from "../db/db.js";
 
 export const uploadVideo = async (req, res) => {
     const {editorId} = req.editor;
@@ -14,12 +14,28 @@ export const uploadVideo = async (req, res) => {
             })
         }
 
+        if(editor.youtuber === null){
+            return res.json({
+                success: false,
+                message: 'You are not Added by any youtuber'
+            })
+        }
+
         const video = await Video.create({
             title,
             description,
             tags,
-            editor: editorId
+            editor: editorId,
+            youtuber: editor.youtuber
         })
+
+        await Youtuber.findByIdAndUpdate(editor.youtuber, 
+            {$addToSet: {videos: video._id}}
+        )
+
+        await Editor.findByIdAndUpdate(editorId,
+            {$addToSet: {videos: video._id}}
+        )
 
         res.status(201).json({
             success: true,
@@ -80,6 +96,7 @@ export const deleteVideo = async(req, res) => {
 
     try {
         const video = await Video.findById(videoId);
+        const editor = await Editor.findById(editorId);
 
         if(!video) {
             return res.status(404).json({
@@ -94,6 +111,22 @@ export const deleteVideo = async(req, res) => {
                 message: 'You are not authorized'
             })
         }
+
+        if(video.status !== 'PENDING') {
+            return res.json({
+                success: false,
+                message: 'Can not delete video'
+            })
+        }
+
+        await Editor.findByIdAndUpdate(editorId, 
+            {$pull : {videos: videoId}},
+            {new: true}
+        )
+
+        await Youtuber.findByIdAndUpdate(editor.youtuber, 
+            {$pull: {videos: videoId}}
+        );
 
         await Video.findByIdAndDelete(videoId);
 

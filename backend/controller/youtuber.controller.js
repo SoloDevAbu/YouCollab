@@ -425,6 +425,10 @@ export const addEditor = async (req, res) => {
             $addToSet: { editors: editor._id }
         });
 
+        await Editor.findByIdAndUpdate(editor._id, {
+            youtuber: youtuberId
+        })
+
         res.status(200).json({
             success: true,
             message: 'Editor Added Successfully'
@@ -463,12 +467,20 @@ export const removeEditor = async (req, res) => {
     const { youtuberId } = req.youtuber;
 
     try {
+        const editor = await Editor.findById(editorId);
         const youtuber = await Youtuber.findById(youtuberId);
 
         if(!youtuber) {
             return res.status(404).json({
                 success: false,
                 message: 'No Youtuber Found'
+            })
+        }
+
+        if(!editor) {
+            return res.status(404).json({
+                success: false,
+                message: 'Editor not Found'
             })
         }
 
@@ -484,6 +496,11 @@ export const removeEditor = async (req, res) => {
             { $pull: { editors: editorId } },
             { new: true }
         );
+
+        await Editor.findByIdAndUpdate(editor._id, 
+            { youtuber: null },
+            {new: true}
+        )
 
         res.status(200).json({
             success: true,

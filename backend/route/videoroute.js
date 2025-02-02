@@ -2,7 +2,7 @@ import {Router} from 'express';
 import { approvedVideos, deleteVideo, editVideo, getVideos, rejectedVideos, uploadVideo } from '../controller/editorUploadVideoController.js';
 import { editorMiddleware } from '../middleware/editor.mddleware.js';
 import { youtuberMiddleware } from '../middleware/youtuber.middleware.js';
-import { confirmVideo, getAllVideos, getApprovedVideos, getRecentVideos, getRejectedVideos, updateVideo } from '../controller/youtuberVideoController.js';
+import { confirmVideo, getAllVideos, getApprovedVideos, getRecentVideos, getRejectedVideos, rejectVideo, updateVideo } from '../controller/youtuberVideoController.js';
 
 const router = Router();
 
@@ -19,5 +19,6 @@ router.get('/youtuber/approved-videos', youtuberMiddleware, getApprovedVideos);
 router.get('/youtuber/rejected-videos', youtuberMiddleware, getRejectedVideos);
 router.put('/youtuber/edit/:videoId', youtuberMiddleware, updateVideo);
 router.put('/youtuber/approve/:videoId', youtuberMiddleware, confirmVideo);
+router.put('/youtuber/reject/:videoId', youtuberMiddleware, rejectVideo);
 
 export default router;

@@ -38,6 +38,10 @@ const youtuberSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Editor'
     }],
+    videos: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Video'
+    }],
     profileImage: {
         type: String
     },
