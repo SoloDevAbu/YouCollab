@@ -3,6 +3,7 @@ import youtuberSchema from './models/youtuber.model.js'
 import editorSchema from './models/editor.model.js';
 import videoSchema from './models/video.model.js';
 import dotenv from 'dotenv';
+import youtubeChannelSchema from './models/youtubeChannel.model.js';
 
 dotenv.config();
 
@@ -25,9 +26,11 @@ connect(MONGODB_URI)
 const Editor = model('Editor', editorSchema);
 const Youtuber = model('Youtuber', youtuberSchema);
 const Video = model('Video', videoSchema);
+const YoutubeChannel = model('Channel', youtubeChannelSchema);
 
 export {
     Editor,
     Youtuber,
-    Video
+    Video,
+    YoutubeChannel,
 }
