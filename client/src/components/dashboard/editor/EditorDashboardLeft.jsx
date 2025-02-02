@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import OptionsCard from '../OptionsCard'
 import ytLogo from '../../../assets/logo/youtube.png'
 import uploadLogo from '../../../assets/logo/upload (1).png'
@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom'
 
 const EditorDashboardLeft = ({setSearchParams}) => {
 
-    const [selectedTab, setSelectedTab] = useState('recent-upload');
+    const [selectedTab, setSelectedTab] = useState('');
 
     const navigate = useNavigate();
 

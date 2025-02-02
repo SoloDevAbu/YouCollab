@@ -40,6 +40,7 @@ const PendingApproval = () => {
                 description={video.description}
                 tags={video.tags.length > 0 ? video.tags : ['No Tags']}
                 status={video.status}
+                date={new Date(video.createdAt).toLocaleString()}
               />
             </div>
           ))

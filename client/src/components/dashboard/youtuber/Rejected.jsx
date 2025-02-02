@@ -1,5 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
+import VideoComponent from '../editor/VideoComponent';
+import thumbnail from '../../../assets/Untitled (2).png'
 
 const Rejected = () => {
   const [videos, setVideos] = useState([]);
@@ -35,6 +37,7 @@ const Rejected = () => {
             description={video.description}
             tags={video.tags.length > 0 ? video.tags : ['No Tags']}
             status={video.status}
+            date={new Date(video.createdAt).toLocaleString()}
           />
         </div>
       )) : (

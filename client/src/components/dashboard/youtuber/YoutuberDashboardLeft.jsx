@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom'
 
 const YoutuberDashboardLeft = ({setSearchParams}) => {
 
-  const [selectedTab, setSelectedTab] = useState('recent-uploads');
+  const [selectedTab, setSelectedTab] = useState('');
   const navigate = useNavigate();
 
 

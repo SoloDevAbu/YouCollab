@@ -8,7 +8,7 @@ import AllEditors from './AllEditors'
 
 const YoutuberDashboardRight = ({selectedOption}) => {
   return (
-    <div>
+    <div className="h-[calc(100vh-4rem)] overflow-y-auto">
       {selectedOption === 'editors' && <AllEditors/>}
       {selectedOption === 'recent-uploads' && <RecentUpload/>}
       {selectedOption === 'all-uploads' && <AllUploads/>}

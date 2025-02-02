@@ -81,6 +81,7 @@ const RecentUpload = () => {
                             description={video.description}
                             tags={video.tags.length > 0 ? video.tags : ['No Tags']}
                             status={video.status}
+                            date={new Date(video.createdAt).toLocaleString()}
                         />
                         {video.status === 'PENDING' && (
                             <div className='flex justify-center mt-2'>

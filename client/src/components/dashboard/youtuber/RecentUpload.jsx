@@ -68,6 +68,52 @@ const RecentUpload = () => {
         updateVideo();
     };
 
+    const handleApproveVideo = (video) => {
+        const confirmVideo = async () => {
+            try {
+                const response = await axios.put(`${backendUrl}/video/youtuber/approve/${video._id}`, {}, {
+                    withCredentials: true
+                })
+                if (response.data.success) {
+                    const updatedResponse = await axios.get(`${backendUrl}/video/youtuber/recent-videos`, {
+                        withCredentials: true,
+                    });
+
+                    if (updatedResponse.data.success) {
+                        setVideos(updatedResponse.data.video);
+                    }
+                }
+            } catch (error) {
+                console.error('Error confirming video', error)
+                alert(error.response?.data?.message || "Something went wrong");
+            }
+        }
+        confirmVideo();
+    }
+
+    const handleRejectVideo = (video) => {
+        const rejectVideo = async () => {
+            try {
+                const response = await axios.put(`${backendUrl}/video/youtuber/reject/${video._id}`, {}, {
+                    withCredentials: true
+                })
+                if (response.data.success) {
+                    const updatedResponse = await axios.get(`${backendUrl}/video/youtuber/recent-videos`, {
+                        withCredentials: true,
+                    });
+
+                    if (updatedResponse.data.success) {
+                        setVideos(updatedResponse.data.video);
+                    }
+                }
+            } catch (error) {
+                console.error('Error rejecting video', error)
+                alert(error.response?.data?.message || "Something went wrong");
+            }
+        }
+        rejectVideo();
+    }
+
 
     return (
         <div className='flex flex-col gap-6 bg-gray-200 m-4 p-4 rounded-lg'>
@@ -83,6 +129,7 @@ const RecentUpload = () => {
                                 description={video.description}
                                 tags={video.tags.length > 0 ? video.tags : ['No Tags']}
                                 status={video.status}
+                                date={new Date(video.createdAt).toLocaleString()}
                             />
                             {video.status === 'PENDING' && (
                                 <>
@@ -94,13 +141,25 @@ const RecentUpload = () => {
                                             Edit Video
                                         </button>
                                     </div>
-                                    <div className='flex justify-center mt-2'>
-                                        <button
-                                            className='bg-blue-500 rounded-lg px-6 py-2 text-white font-bold'
-                                            onClick={() => handleApproveVideo(video)}
-                                        >
-                                            Confirm Video
-                                        </button>
+
+                                    <div className='flex justify-center gap-4'>
+                                        <div className='flex justify-center mt-2'>
+                                            <button
+                                                className='bg-red-500 rounded-lg px-6 py-2 text-white font-bold'
+                                                onClick={() => handleRejectVideo(video)}
+                                            >
+                                                Reject Video
+                                            </button>
+                                        </div>
+
+                                        <div className='flex justify-center mt-2'>
+                                            <button
+                                                className='bg-blue-500 rounded-lg px-6 py-2 text-white font-bold'
+                                                onClick={() => handleApproveVideo(video)}
+                                            >
+                                                Confirm Video
+                                            </button>
+                                        </div>
                                     </div>
                                 </>
                             )}

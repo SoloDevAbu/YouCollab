@@ -1,6 +1,6 @@
 import React from 'react'
 
-const VideoComponent = ({thumbnail, title, description, tags, status}) => {
+const VideoComponent = ({thumbnail, title, description, tags, status, date}) => {
     const getStatusColor = (status) => {
         switch (status.toLowerCase()) {
             case 'pending':
@@ -15,15 +15,15 @@ const VideoComponent = ({thumbnail, title, description, tags, status}) => {
     };
 
     return (
-        <div className='flex flex-col gap-4 bg-gray-100 rounded-lg m-2 p-2'>
-            <div className='flex justify-around bg-gray-300 p-4 rounded-lg gap-1'>
+        <div className='flex flex-col gap-4 m-2 p-2'>
+            <div className='flex flex-wrap justify-around border-2 border-gray-600 shadow-md shadow-slate-900 p-4 rounded-lg gap-1'>
                 <img src={thumbnail} alt="" className='max-h-64' />
-                <div className='flex flex-col bg-gray-400 p-4 rounded-lg text-white font-semibold '>
-                    <h1>Uploaded at: 01/02/2025 5:13PM</h1>
+                <div className='flex flex-col bg-slate-900 p-4 rounded-lg text-white font-semibold '>
+                    <h1>Uploaded at: <br />{date}</h1>
                     <p>Status: <span className={getStatusColor(status)}>{status}</span></p>
                 </div>
             </div>
-            <div className='bg-gray-300 rounded-lg p-4'>
+            <div className='border-2 border-gray-600 shadow-md shadow-slate-900 rounded-lg p-4'>
                 <h1 className='font-bold'>Title:</h1>
                 <p className='font-semibold'>{title}</p>
                 <h1 className='font-bold'>Description:</h1>
