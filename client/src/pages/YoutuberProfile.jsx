@@ -1,6 +1,6 @@
 import React from 'react'
 import YoutuberInfo from '../components/youtuber/YoutuberInfo'
-import YoutuberVideos from '../components/youtuber/YoutuberVideos'
+import YoutuberChannel from '../components/youtuber/YoutuberChannel'
 
 const YoutuberProfile = () => {
   return (
@@ -9,7 +9,7 @@ const YoutuberProfile = () => {
         <YoutuberInfo/>
       </div>
       <div className='w-full md:w-3/4'>
-        <YoutuberVideos/>
+        <YoutuberChannel/>
       </div>
     </div>
   )

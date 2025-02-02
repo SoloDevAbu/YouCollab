@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import OptionsCard from '../OptionsCard'
 import ytLogo from '../../../assets/logo/youtube.png'
 import uploadLogo from '../../../assets/logo/upload (1).png'
@@ -8,8 +8,11 @@ import rejectLogo from '../../../assets/logo/remove.png'
 import settingLogo from '../../../assets/logo/settings.png'
 import recentLogo from '../../../assets/logo/recent.png'
 import { useNavigate } from 'react-router-dom'
+import { AppContext } from '../../../context/AppContext'
 
 const EditorDashboardLeft = ({setSearchParams}) => {
+
+    const { userData } = useContext(AppContext);
 
     const [selectedTab, setSelectedTab] = useState('');
 
@@ -22,7 +25,7 @@ const EditorDashboardLeft = ({setSearchParams}) => {
 
     return (
         <div className='mx-4 flex flex-col h-screen'>
-            <h1 className='text-lg font-bold mt-2'>Hi, Editor Name</h1>
+            <h1 className='text-lg font-bold mt-2'>Hi, {userData?.name}</h1>
             <OptionsCard logo={ytLogo} name={'Channel Name'}/>
             <OptionsCard logo={uploadLogo} name={'New Upload'}  onClick={() => handleTabChange('new-upload')} isSelected={selectedTab === 'new-upload'}/>
             <OptionsCard logo={recentLogo} name={'Recent Upload'}  onClick={() => handleTabChange('recent-upload')} isSelected={selectedTab === 'recent-upload'}/>
