@@ -25,7 +25,7 @@ const youtubeChannelSchema = new Schema({
     },
     bannerUrl: {
         type: String,
-        required: true,
+        default: null,
     },
     profileUrl: {
         type: String,
