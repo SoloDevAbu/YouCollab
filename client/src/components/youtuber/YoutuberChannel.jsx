@@ -1,17 +1,34 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import banner from '../../assets/channels4_banner.jpg'
 import profile from '../../assets/channels4_profile.jpg'
 import channelNotFound from '../../assets/NoChannel.png'
+import axios from 'axios'
 
 const YoutuberChannel = () => {
     const [channelInfo, setChannelInfo] = useState('');
 
-    const handleAddChannel = () => {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL
 
+    const handleAddChannel = async () => {
+        window.location.href = 'http://localhost:5000/api/youtube/auth/google'
     }
 
-    const handleSignout = () => {
+    useEffect(() => {
+        const fetchChannel = async () => {
+            try {
+                const res = await axios.get(`${backendUrl}/youtube/channel/info`,{
+                    withCredentials: true
+                })
+                setChannelInfo(res.data)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        fetchChannel()
+    }, [])
 
+    const handleSignout = () => {
+        
     }
 
     return (
@@ -23,14 +40,14 @@ const YoutuberChannel = () => {
                     </div>
                     <div className='flex gap-6'>
                         <div>
-                            <img src={profile} alt="" className='rounded-full' />
+                            <img src={channelInfo.youtuber.profileUrl} alt="" className='rounded-full size-20' />
                         </div>
                         <div>
-                            <h1 className='text-lg font-bold'>100xDevs</h1>
-                            <h3 className='font-semibold'>@100xDevsYT</h3>
+                            <h1 className='text-lg font-bold'>{channelInfo.youtuber.channelName}</h1>
+                            <h3 className='font-semibold'>{channelInfo.youtuber.channelUserName}</h3>
                             <div className='flex gap-4'>
-                                <h3 className='font-semibold'>35.3K Subscribers</h3>
-                                <h3 className='font-semibold'>60 Videos</h3>
+                                <h3 className='font-semibold'>{channelInfo.youtuber.subscriberCount} subscribers</h3>
+                                <h3 className='font-semibold'>{channelInfo.youtuber.videoCount} videos</h3>
                             </div>
                         </div>
                     </div>

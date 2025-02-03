@@ -130,7 +130,7 @@ const LoginForm = () => {
                             type="submit"
                             disabled={loading}
                         >
-                            {loading ? 'Creating Account' : 'Create Account'}
+                            {loading ? 'Logging In' : 'Log In'}
                         </button>
                     </div>
                 {errors.general && <p className="text-red-500 text-xs italic mt-4">{errors.general}</p>}
