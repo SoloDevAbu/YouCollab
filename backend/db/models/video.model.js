@@ -1,6 +1,10 @@
 import { Schema } from "mongoose";
 
 const videoSchema = new Schema({
+    fileName: {
+        type: String,
+        required: true,
+    },
     title: {
         type: String,
         required: true

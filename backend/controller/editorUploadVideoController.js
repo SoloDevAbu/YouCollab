@@ -1,8 +1,24 @@
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Editor, Video, Youtuber } from "../db/db.js";
+import { s3Client } from "../config/aws-S3Config.js";
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const getAwsPresignedUrl = async (fileName, contentType) => {
+    const command = new PutObjectCommand({
+        Bucket: process.env.AWS_BUCKET,
+        Key: `editor/uploads/${fileName}`,
+        ContentType: contentType
+    });
+    const url = await getSignedUrl(s3Client, command, { expiresIn: 120 });
+    return url;
+}
 
 export const uploadVideo = async (req, res) => {
     const {editorId} = req.editor;
-    const {title, description, tags} = req.body;
+    const {fileName, title, description, tags} = req.body;
 
     try {
         const editor = await Editor.findById(editorId);
@@ -22,6 +38,7 @@ export const uploadVideo = async (req, res) => {
         }
 
         const video = await Video.create({
+            fileName,
             title,
             description,
             tags,
@@ -37,9 +54,12 @@ export const uploadVideo = async (req, res) => {
             {$addToSet: {videos: video._id}}
         )
 
+        const uploadPresignedUrl = await getAwsPresignedUrl(fileName, 'video/mp4');
+    
+
         res.status(201).json({
             success: true,
-            message: 'Video Uploaded Successfully',
+            uploadPresignedUrl,
             videoId: video._id
         })
 
