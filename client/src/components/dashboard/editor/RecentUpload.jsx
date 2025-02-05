@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import thumbnail from '../../../assets/Untitled (2).png';
 import VideoComponent from './VideoComponent';
 
 const RecentUpload = () => {
@@ -19,7 +18,7 @@ const RecentUpload = () => {
                 });
 
                 if (response.data.success) {
-                    setVideos(response.data.video);
+                    setVideos(response.data.videos);
                 }
             } catch (error) {
                 console.error('Error fetching videos:', error);
@@ -76,7 +75,7 @@ const RecentUpload = () => {
                 videos.map((video) => (
                     <div key={video._id} className='bg-white p-4 rounded-lg shadow-md'>
                         <VideoComponent
-                            thumbnail={thumbnail}
+                            videoSrc={video.presignedUrl}
                             title={video.title}
                             description={video.description}
                             tags={video.tags.length > 0 ? video.tags : ['No Tags']}

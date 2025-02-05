@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import thumbnail from '../../../assets/Untitled (2).png';
 import VideoComponent from '../editor/VideoComponent';
 import axios from 'axios';
 
@@ -18,7 +17,7 @@ const RecentUpload = () => {
                 });
 
                 if (response.data.success) {
-                    setVideos(response.data.video);
+                    setVideos(response.data.videos);
                 }
             } catch (error) {
                 console.error('Error fetching videos:', error);
@@ -29,7 +28,7 @@ const RecentUpload = () => {
     }, []);
 
     const handleEditClick = (video) => {
-        if (video.status !== 'PENDING') {
+        if (videos.status !== 'PENDING') {
             alert('Editing is only allowed for videos with PENDING status.');
             return;
         }
@@ -56,7 +55,7 @@ const RecentUpload = () => {
                     });
 
                     if (updatedResponse.data.success) {
-                        setVideos(updatedResponse.data.video);
+                        setVideos(updatedResponse.data.videos);
                     }
                     setEditingVideoId(null);
                 }
@@ -80,7 +79,7 @@ const RecentUpload = () => {
                     });
 
                     if (updatedResponse.data.success) {
-                        setVideos(updatedResponse.data.video);
+                        setVideos(updatedResponse.data.videos);
                     }
                 }
             } catch (error) {
@@ -103,7 +102,7 @@ const RecentUpload = () => {
                     });
 
                     if (updatedResponse.data.success) {
-                        setVideos(updatedResponse.data.video);
+                        setVideos(updatedResponse.data.videos);
                     }
                 }
             } catch (error) {
@@ -124,7 +123,7 @@ const RecentUpload = () => {
                     .map(video => (
                         <div key={video._id} className="bg-white p-4 rounded-lg shadow-md">
                             <VideoComponent
-                                thumbnail={thumbnail}
+                                videoSrc={video.presignedUrl}
                                 title={video.title}
                                 description={video.description}
                                 tags={video.tags.length > 0 ? video.tags : ['No Tags']}

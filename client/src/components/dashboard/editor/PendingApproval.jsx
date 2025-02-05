@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import VideoComponent from './VideoComponent'
-import thumbnail from '../../../assets/Untitled (2).png'
 import axios from 'axios';
 
 const PendingApproval = () => {
@@ -16,7 +15,7 @@ const PendingApproval = () => {
         });
 
         if (response.data.success) {
-          setVideos(response.data.video);
+          setVideos(response.data.videos);
         }
         console.log(response.data)
       } catch (error) {
@@ -35,7 +34,7 @@ const PendingApproval = () => {
           .map(video => (
             <div key={video._id} className="bg-white p-4 rounded-lg shadow-md">
               <VideoComponent
-                thumbnail={thumbnail}
+                videoSrc={video.presignedUrl}
                 title={video.title}
                 description={video.description}
                 tags={video.tags.length > 0 ? video.tags : ['No Tags']}

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import VideoComponent from './VideoComponent'
 import axios from 'axios';
-import thumbnail from '../../../assets/Untitled (2).png';
 
 const RecentApproval = () => {
 
@@ -17,7 +16,7 @@ const RecentApproval = () => {
         });
 
         if (response.data.success) {
-          setVideos(response.data.video);
+          setVideos(response.data.videos);
         }
         console.log(response.data)
       } catch (error) {
@@ -33,7 +32,7 @@ const RecentApproval = () => {
       {videos.length > 0 ? videos.map(video => (
             <div key={video._id} className="bg-white p-4 rounded-lg shadow-md">
               <VideoComponent
-                thumbnail={thumbnail}
+                videoSrc={video.presignedUrl}
                 title={video.title}
                 description={video.description}
                 tags={video.tags.length > 0 ? video.tags : ['No Tags']}
