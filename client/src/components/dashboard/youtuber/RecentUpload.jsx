@@ -70,25 +70,38 @@ const RecentUpload = () => {
     const handleApproveVideo = (video) => {
         const confirmVideo = async () => {
             try {
-                const response = await axios.put(`${backendUrl}/video/youtuber/approve/${video._id}`, {}, {
+                const uploadResponse = await axios.post(`${backendUrl}/youtube/upload-video/${video._id}`, {}, {
                     withCredentials: true
-                })
-                if (response.data.success) {
-                    const updatedResponse = await axios.get(`${backendUrl}/video/youtuber/recent-videos`, {
-                        withCredentials: true,
+                });
+    
+                if (uploadResponse.data.success) {
+                    console.log(`Video Uploaded to YouTube`);
+    
+                    const response = await axios.put(`${backendUrl}/video/youtuber/approve/${video._id}`, {}, {
+                        withCredentials: true
                     });
-
-                    if (updatedResponse.data.success) {
-                        setVideos(updatedResponse.data.videos);
+    
+                    if (response.data.success) {
+                        const updatedResponse = await axios.get(`${backendUrl}/video/youtuber/recent-videos`, {
+                            withCredentials: true,
+                        });
+    
+                        if (updatedResponse.data.success) {
+                            setVideos(updatedResponse.data.videos);
+                        }
                     }
+                } else {
+                    console.error("YouTube upload failed. Video not marked as approved.");
+                    alert("YouTube upload failed. Please try again.");
                 }
             } catch (error) {
-                console.error('Error confirming video', error)
+                console.error('Error uploading or approving video:', error);
                 alert(error.response?.data?.message || "Something went wrong");
             }
-        }
+        };
         confirmVideo();
-    }
+    };
+    
 
     const handleRejectVideo = (video) => {
         const rejectVideo = async () => {
