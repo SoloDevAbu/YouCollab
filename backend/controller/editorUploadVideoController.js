@@ -1,20 +1,5 @@
-import { PutObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Editor, Video, Youtuber } from "../db/db.js";
-import { s3Client } from "../config/aws-S3Config.js";
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-const getAwsPresignedUrl = async (fileName, contentType) => {
-    const command = new PutObjectCommand({
-        Bucket: process.env.AWS_BUCKET,
-        Key: `editor/uploads/${fileName}`,
-        ContentType: contentType
-    });
-    const url = await getSignedUrl(s3Client, command, { expiresIn: 120 });
-    return url;
-}
+import { getAwsPresignedUrlForShowVideo, getAwsPresignedUrlForUpload } from "./awsController.js";
 
 export const uploadVideo = async (req, res) => {
     const {editorId} = req.editor;
@@ -54,7 +39,7 @@ export const uploadVideo = async (req, res) => {
             {$addToSet: {videos: video._id}}
         )
 
-        const uploadPresignedUrl = await getAwsPresignedUrl(fileName, 'video/mp4');
+        const uploadPresignedUrl = await getAwsPresignedUrlForUpload(fileName, 'video/mp4');
     
 
         res.status(201).json({
@@ -174,11 +159,18 @@ export const getVideos = async (req, res) => {
                 message: 'No video found'
             })
         }
-
+        const videosWithPresignedUrls = await Promise.all(video.map(async (vid) => {
+            const presignedUrl = await getAwsPresignedUrlForShowVideo(vid.fileName);
+            return {
+                ...vid.toObject(),
+                presignedUrl
+            };
+        }));
+        
         res.status(200).json({
             success: true,
-            video
-        })
+            videos: videosWithPresignedUrls
+        });
     } catch (error) {
         res.status(500).json({
             success: false,
@@ -186,6 +178,7 @@ export const getVideos = async (req, res) => {
         })
     }
 }
+
 
 export const approvedVideos = async (req, res) => {
     const {editorId} = req.editor;
@@ -200,10 +193,18 @@ export const approvedVideos = async (req, res) => {
             })
         }
 
+        const videosWithPresignedUrls = await Promise.all(video.map(async (vid) => {
+            const presignedUrl = await getAwsPresignedUrlForShowVideo(vid.fileName);
+            return {
+                ...vid.toObject(),
+                presignedUrl
+            };
+        }));
+        
         res.status(200).json({
             success: true,
-            video
-        })
+            videos: videosWithPresignedUrls
+        });
     } catch (error) {
         res.status(500).json({
             success: false,
@@ -225,10 +226,18 @@ export const rejectedVideos = async (req, res) => {
             })
         }
 
+        const videosWithPresignedUrls = await Promise.all(video.map(async (vid) => {
+            const presignedUrl = await getAwsPresignedUrlForShowVideo(vid.fileName);
+            return {
+                ...vid.toObject(),
+                presignedUrl
+            };
+        }));
+        
         res.status(200).json({
             success: true,
-            video
-        })
+            videos: videosWithPresignedUrls
+        });
     } catch (error) {
         res.status(500).json({
             success: false,
