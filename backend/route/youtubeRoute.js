@@ -6,6 +6,6 @@ import { youtuberMiddleware } from '../middleware/youtuber.middleware.js';
 const router = Router();
 
 router.get('/channel/info',youtuberMiddleware, authMiddleware, getChannelInfo);
-router.post('/upload-video', authMiddleware, uploadVideoToYoutube);
+router.post('/upload-video/:videoId', authMiddleware, uploadVideoToYoutube);
 
 export default router;

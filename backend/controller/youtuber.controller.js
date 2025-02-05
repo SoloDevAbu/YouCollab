@@ -1,4 +1,4 @@
-import { Editor, Youtuber } from '../db/db.js';
+import { Editor, YoutubeChannel, Youtuber } from '../db/db.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import transporter from '../config/nodemailer.js';
@@ -104,14 +104,31 @@ export const loginYoutuber = async (req, res) => {
         //     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
         //     maxAge: 7 * 24 * 60 * 60 * 1000
         // })
-        res.status(201).cookie('token', token, {
+        res.cookie('token', token, {
             httpOnly: false,
             secure: false,
             sameSite: 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         });
 
-        return res.json({
+        const youtubeAccount = await YoutubeChannel.findOne({
+            youtuberId: youtuber._id
+        })
+        
+        if (youtubeAccount) {
+            const youtubeToken = jwt.sign(youtubeAccount.toObject(), process.env.JWT_SECRET, {
+                expiresIn: "1h",
+            });
+
+            res.cookie('youtubeAuth', youtubeToken, {
+                httpOnly: false,
+                secure: false,
+                sameSite: 'lax',
+                maxAge: 1 * 60 * 60 * 1000,
+            });
+        }
+
+        return res.status(200).json({
             success: true,
             message: 'User signed in successfully',
         });
@@ -463,21 +480,21 @@ export const getEditors = async (req, res) => {
 };
 
 export const removeEditor = async (req, res) => {
-    const {editorId} = req.params;
+    const { editorId } = req.params;
     const { youtuberId } = req.youtuber;
 
     try {
         const editor = await Editor.findById(editorId);
         const youtuber = await Youtuber.findById(youtuberId);
 
-        if(!youtuber) {
+        if (!youtuber) {
             return res.status(404).json({
                 success: false,
                 message: 'No Youtuber Found'
             })
         }
 
-        if(!editor) {
+        if (!editor) {
             return res.status(404).json({
                 success: false,
                 message: 'Editor not Found'
@@ -497,9 +514,9 @@ export const removeEditor = async (req, res) => {
             { new: true }
         );
 
-        await Editor.findByIdAndUpdate(editor._id, 
+        await Editor.findByIdAndUpdate(editor._id,
             { youtuber: null },
-            {new: true}
+            { new: true }
         )
 
         res.status(200).json({
