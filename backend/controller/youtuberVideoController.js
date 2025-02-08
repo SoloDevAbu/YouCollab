@@ -1,5 +1,5 @@
 import { Video } from "../db/db.js";
-import { getAwsPresignedUrlForShowVideo } from "./awsController.js";
+import { deleteVideoFromAws, getAwsPresignedUrlForShowVideo } from "./awsController.js";
 
 export const getAllVideos = async (req, res) => {
     const { youtuberId } = req.youtuber;
@@ -200,6 +200,16 @@ export const confirmVideo = async (req, res) => {
             status: "APPROVED"
         })
 
+        const fileName = video.fileName;
+
+        if(!fileName) {
+            return res.status(404).json({
+                success: false,
+                message: 'Video file name does not exists'
+            })
+        }
+        await deleteVideoFromAws(fileName);
+
         res.status(200).json({
             success: true,
             message: 'Video Confirmed, Uploading to YouTube'
@@ -235,6 +245,16 @@ export const rejectVideo = async (req, res) => {
         await Video.findByIdAndUpdate(videoId, {
             status: "REJECTED"
         })
+
+        const fileName = video.fileName;
+
+        if(!fileName) {
+            return res.status(404).json({
+                success: false,
+                message: 'Video file name does not exists'
+            })
+        }
+        await deleteVideoFromAws(fileName);
 
         res.status(200).json({
             success: true,

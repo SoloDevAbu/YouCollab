@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import fs from 'fs';
 import os from 'os';
+import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 
 dotenv.config();
 
@@ -66,5 +67,27 @@ export const downloadVideoFromS3 = async (fileName) => {
     } catch (error) {
         console.error("Error downloading video from S3:", error);
         throw new Error("Failed to download video from S3");
+    }
+};
+
+export const deleteVideoFromAws = async (fileName) => {
+    try {
+        if (!fileName) {
+            throw new Error("Invalid file name");
+        }
+
+        const key = `editor/uploads/${fileName}`;
+        console.log(`Attempting to delete: ${key}`);
+
+        const command = new DeleteObjectCommand({
+            Bucket: process.env.AWS_BUCKET,
+            Key: key,
+        });
+
+        await s3Client.send(command);
+        console.log(`Successfully deleted: ${fileName} from S3`);
+    } catch (error) {
+        console.error("Error deleting video from S3:", error);
+        throw new Error("Failed to delete video from S3");
     }
 };

@@ -4,11 +4,45 @@ import fs from 'fs';
 import dotenv from 'dotenv'
 import multer from 'multer'
 import { downloadVideoFromS3 } from "./awsController.js";
+import oauth2Client from "../config/youtubeConfig.js";
+import path from "path";
 
 dotenv.config();
 
+const allowedMimeTypes = [
+    "video/quicktime",
+    "video/mpeg",
+    "video/mp4",
+    "video/x-msvideo",
+    "video/x-ms-wmv",
+    "video/x-flv",
+    "video/mpg",
+    "video/mpegps",
+    "video/3gpp", 
+    "video/webm",
+    "video/x-dnxhr",
+    "video/quicktime",
+    "video/x-cineform",
+    "video/hevc",
+    "video/h265"
+];
 
-const upload = multer({ dest: 'uploads/' }).single('video')
+const fileFilter = (req, file, cb) => {
+    const extname = path.extname(file.originalname).toLowerCase();
+    const mimetype = file.mimetype.toLowerCase();
+
+    if (allowedMimeTypes.includes(mimetype)) {
+        return cb(null, true);
+    } else {
+        cb(new Error('Only specified video file types are allowed!'));
+    }
+};
+
+const upload = multer({
+    dest: 'uploads/',
+    limits: { fileSize: 100 * 1024 * 1024 },
+    fileFilter: fileFilter
+}).single('video');
 
 export const getChannelInfo = async (req, res) => {
     const { youtuberId } = req.youtuber
@@ -22,6 +56,32 @@ export const getChannelInfo = async (req, res) => {
                 message: 'Youtube channel not linked'
             })
         }
+
+        const youtube = google.youtube({ version: "v3", auth: oauth2Client });
+
+        const channelResponse = await youtube.channels.list({
+            part: "snippet,statistics,brandingSettings",
+            mine: true,
+        });
+
+        if (!channelResponse.data.items || channelResponse.data.items.length === 0) {
+            return res.status(404).json({ error: "No YouTube channel found" });
+        }
+
+        const channel = channelResponse.data.items[0];
+
+        const channelData = {
+            youtuberId: youtuberId,
+            channelName: channel.snippet.title,
+            channelUserName: channel.snippet.customUrl || channel.snippet.localized.title,
+            subscriberCount: parseInt(channel.statistics.subscriberCount, 10) || 0,
+            videoCount: parseInt(channel.statistics.videoCount, 10) || 0,
+            bannerUrl: channel.brandingSettings.image?.bannerExternalUrl || "",
+            profileUrl: channel.snippet.thumbnails?.high?.url || "",
+        };
+
+        await YoutubeChannel.findByIdAndUpdate(youtuber._id, channelData);
+
 
         res.status(200).json({
             youtuber
@@ -82,13 +142,7 @@ export const uploadVideoToYoutube = async (req, res) => {
 
         const oauth2Client = new google.auth.OAuth2();
         oauth2Client.setCredentials({access_token: youtuber.accessToken});
-        // if(oauth2Client.isTokenExpiring()) {
-        //     const { credentials } = await oauth2Client.refreshAccessToken();
-        //     oauth2Client.setCredentials(credentials);
-        //     youtuber.accessToken = credentials.access_token;
-        //     await youtuber.save();
-        // }
-
+        
         const youtube = google.youtube({version: 'v3', auth: oauth2Client});
 
         let response;
