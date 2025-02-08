@@ -81,17 +81,9 @@ export const getApprovedVideos = async (req, res) => {
             })
         }
 
-        const videosWithPresignedUrls = await Promise.all(video.map(async (vid) => {
-            const presignedUrl = await getAwsPresignedUrlForShowVideo(vid.fileName)
-            return {
-                ...vid.toObject(),
-                presignedUrl
-            }
-        }))
-
         res.status(200).json({
             success: true,
-            videos: videosWithPresignedUrls
+            videos: video
         })
 
     } catch (error) {
@@ -116,17 +108,9 @@ export const getRejectedVideos = async (req, res) => {
             })
         }
 
-        const videosWithPresignedUrls = await Promise.all(video.map(async (vid) => {
-            const presignedUrl = await getAwsPresignedUrlForShowVideo(vid.fileName)
-            return {
-                ...vid.toObject(),
-                presignedUrl
-            }
-        }))
-
         res.status(200).json({
             success: true,
-            videos: videosWithPresignedUrls
+            videos: video
         })
     } catch (error) {
         res.status(500).json({

@@ -21,13 +21,16 @@ export const AppContextProvider = (props) => {
                 setUserData(decode);
                 setIsLoggedin(true);
                 setUserCategory(decode.userType)
+                console.log('User Category Set:', decode.userType);
             } catch (error) {
                 console.error('Error decoding token:', error);
             }
         } else {
             console.log('No token found in cookies.');
         }
-        setLoading(false);
+        setTimeout(() => {
+            setLoading(false);
+        }, 100);
     }, []);
     
     
