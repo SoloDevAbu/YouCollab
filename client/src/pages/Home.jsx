@@ -1,12 +1,15 @@
 import React from 'react'
-import Heading from '../components/Heading'
-import Hero from '../components/Hero'
+import Hero from '../components/home/Hero'
+import Features from '../components/home/Features'
+import Benefits from '../components/home/Benefits'
+
 
 const Home = () => {
   return (
-    <div>
-        <Heading/>
+    <div className='pt-20 mx-8 md:mx-16'>
         <Hero/>
+        <Features/>
+        <Benefits/>
     </div>
   )
 }
