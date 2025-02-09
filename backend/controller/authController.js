@@ -54,15 +54,12 @@ export const googleAuthCallback = async (req, res) => {
             videoCount: parseInt(channel.statistics.videoCount, 10) || 0,
             bannerUrl: channel.brandingSettings.image?.bannerExternalUrl || "",
             profileUrl: channel.snippet.thumbnails?.high?.url || "",
-            accessToken: tokens.access_token,
-            refreshToken: tokens.refresh_token || null,
-            tokenExpiry: new Date(Date.now() + tokens.expiry_date),
         };
 
         await YoutubeChannel.create(channelData);
 
         const token = jwt.sign(channelData, process.env.JWT_SECRET, {
-            expiresIn: "1h",
+            expiresIn: "7d",
         });
 
         res.cookie("youtubeAuth", token, {
