@@ -21,6 +21,14 @@ const Navbar = () => {
         </h1>
       </div>
 
+      <div className='flex'>
+        <ul className='flex gap-2 justify-center items-center font-medium sm:gap-4 md:gap-10'>
+          <li>About</li>
+          <li>Products</li>
+          <li>Pricing</li>
+        </ul>
+      </div>
+
       <div className="flex gap-4 items-center">
 
         {isLoggedin ? (
