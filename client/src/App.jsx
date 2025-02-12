@@ -5,6 +5,7 @@ import { AppContext } from "./context/AppContext"
 import ProtectedRoute from './components/ProtectedRoute'
 import About from "./pages/About"
 import Pricing from "./pages/Pricing"
+import PrivacyPolicy from "./pages/PrivacyPolicy"
 
 const Home = lazy(() => import('./pages/Home'))
 const SignupPage = lazy(() => import('./pages/Signup'))
@@ -22,7 +23,7 @@ export default function App() {
   }
   
   return (
-    <div>
+    <div className="bg-background">
       <Navbar />
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>
@@ -32,6 +33,7 @@ export default function App() {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/about" element={<About />} />
           <Route path="/pricing" element={<Pricing/>} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy/>} />
           {/* Protected Routes */}
           <Route element={<ProtectedRoute allowedCategories={["youtuber"]} />}>
             <Route path="/dashboard" element={<YoutuberDashboard />} />

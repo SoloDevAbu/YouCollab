@@ -1,6 +1,6 @@
 import React from 'react';
 import infoLogo from '../assets/info.png';
-import { aboutData } from '../constents/aboutData';
+import { howItWorksSteps } from '../constents/aboutData';
 import StepSection from '../components/AboutStepSection';
 
 const About = () => {
@@ -8,7 +8,7 @@ const About = () => {
       <div className="pt-28 mx-8 md:mx-16">
         {/* About Header */}
         <div className="flex flex-col justify-center items-center">
-          <div className="flex items-center gap-2 shadow-2px rounded-xl px-2">
+          <div className="bg-white flex items-center gap-2 shadow-2px rounded-xl px-2">
             <img src={infoLogo} alt="Info" className="size-4" />
             <p className="text-sm font-medium">About</p>
           </div>
@@ -21,16 +21,16 @@ const About = () => {
         </div>
   
         {/* About Description */}
-        <div className="flex flex-col md:flex-row items-center gap-5 rounded-xl shadow-2px px-8 md:px-16 py-10 my-5 md:my-10">
-          <h3 className="text-lg font-semibold text-gray-500">
+        <div className="bg-white flex flex-col md:flex-row items-center gap-5 rounded-xl shadow-2px px-8 md:px-16 py-10 my-5 md:my-10">
+          <h3 className="text-lg font-semibold text-gray-500 text-center">
             YouCollab is a revolutionary SaaS platform designed to streamline every step of the video production process. It brings together YouTubers and professional video editors in one intuitive workspace, enabling a smooth, secure, and efficient workflow—from account creation to final video publication on YouTube.
           </h3>
         </div>
   
         {/* How It Works Section */}
-        <div className="flex flex-col gap-5 rounded-xl shadow-2px px-8 md:px-16 py-10 my-5 md:my-10">
+        <div className="bg-white flex flex-col gap-5 rounded-xl shadow-2px px-8 md:px-16 py-10 my-5 md:my-10">
           <h1 className="font-bold text-2xl">How It Works</h1>
-          {aboutData.map((step, idx) => (
+          {howItWorksSteps.map((step, idx) => (
             <StepSection key={idx} title={step.title} items={step.items} />
           ))}
         </div>

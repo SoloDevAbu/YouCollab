@@ -10,7 +10,7 @@ const Benefits = () => {
     return (
         <div className='my-5 md:my-20'>
             <div className='flex flex-col justify-center items-center'>
-                <div className='flex items-center gap-2 shadow-2px rounded-xl px-2'>
+                <div className='bg-white flex items-center gap-2 shadow-2px rounded-xl px-2'>
                     <img src={benefitsIcon} alt="" className='size-4' />
                     <p className='text-sm font-medium'>Benefits</p>
                 </div>

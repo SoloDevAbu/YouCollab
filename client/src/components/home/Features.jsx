@@ -14,7 +14,7 @@ const Features = () => {
         <div className='my-5 md:my-20'>
             {/* for showing the header */}
             <div className='flex flex-col justify-center items-center'>
-                <div className='flex items-center gap-2 shadow-2px rounded-xl px-2'>
+                <div className='bg-white flex items-center gap-2 shadow-2px rounded-xl px-2'>
                     <img src={flameIcon} alt="" className='size-4' />
                     <p className='text-sm font-medium'>How it works</p>
                 </div>

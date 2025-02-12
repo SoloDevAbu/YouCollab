@@ -4,7 +4,7 @@ import tickMark from '../../assets/home/features/tick-inside-circle.png'
 
 const PricingPremium = () => {
   return (
-    <div className='shadow-2px p-4 rounded-xl'>
+    <div className='bg-white shadow-2px p-4 rounded-xl'>
       <div className='mb-4'>
         <h1 className='text-xl font-semibold pb-6'>Premium</h1>
         <div className='flex items-end'>

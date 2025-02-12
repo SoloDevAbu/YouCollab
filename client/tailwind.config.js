@@ -9,6 +9,9 @@ export default {
       boxShadow: {
         '2px': '0 0 1px 2px rgba(209, 213, 219, 0.5)',
       },
+      colors: {
+        'background': '#f3f4f6',
+      },
     },
   },
   plugins: [],
