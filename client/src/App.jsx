@@ -3,6 +3,8 @@ import { Route, Routes } from "react-router-dom"
 import Navbar from "./components/Navbar"
 import { AppContext } from "./context/AppContext"
 import ProtectedRoute from './components/ProtectedRoute'
+import About from "./pages/About"
+import Pricing from "./pages/Pricing"
 
 const Home = lazy(() => import('./pages/Home'))
 const SignupPage = lazy(() => import('./pages/Signup'))
@@ -28,7 +30,8 @@ export default function App() {
           <Route path="/" element={isLoggedin ? (category === "youtuber" ? <YoutuberDashboard /> : <EditorDashboard />) : <Home />} />
           <Route path="/login" element={<SigninPage />} />
           <Route path="/signup" element={<SignupPage />} />
-
+          <Route path="/about" element={<About />} />
+          <Route path="/pricing" element={<Pricing/>} />
           {/* Protected Routes */}
           <Route element={<ProtectedRoute allowedCategories={["youtuber"]} />}>
             <Route path="/dashboard" element={<YoutuberDashboard />} />
