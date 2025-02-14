@@ -5,7 +5,7 @@ import mainRoute from './route/mainroute.js';
 import authRoute from './route/youtubeAuthRoute.js'
 import cors from 'cors';
 
-const allowedOrigins = ['http://localhost:5173']
+const allowedOrigins = ['http://localhost:5173', 'https://you-collab.vercel.app']
 
 app.use(cors({origin: allowedOrigins, credentials: true}));
 app.use(json());
