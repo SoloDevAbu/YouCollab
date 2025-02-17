@@ -121,11 +121,11 @@ export const loginYoutuber = async (req, res) => {
             });
 
             res.cookie('youtubeAuth', youtubeToken, {
-                httpOnly: false,
-                secure: false,
-                sameSite: 'lax',
+                httpOnly: true, // Prevents client-side access
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
                 maxAge: 1 * 60 * 60 * 1000,
-            });
+              });
         }
 
         return res.status(200).json({
