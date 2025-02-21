@@ -3,7 +3,7 @@ import { useNavigate, NavLink } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import menuIcon from '../assets/logo/menu (1).png';
 import { AppContext } from '../context/AppContext';
-
+import githubLogo from '../assets/logo/github.png'
 const Navbar = () => {
   const navigate = useNavigate();
   const { isLoggedin, userData } = useContext(AppContext);
@@ -54,34 +54,35 @@ const Navbar = () => {
       </div>
 
       {/* Authentication Section */}
-      <div className="hidden sm:flex items-center gap-4">
-        {isLoggedin ? (
-          <div
-            className="w-8 h-8 bg-blue-500 text-white font-sans font-bold rounded-full flex justify-center items-center cursor-pointer"
-            title={userData?.name || "Profile"}
-            onClick={handleProfileClick}
+        <div className="hidden sm:flex items-center gap-4">
+          <img src={githubLogo} alt="GitHub" className="w-8 h-8 cursor-pointer" onClick={() => window.open('https://github.com/SoloDevAbu/YouCollab', '_blank')} />
+          {isLoggedin ? (
+            <div
+          className="w-8 h-8 bg-blue-500 text-white font-sans font-bold rounded-full flex justify-center items-center cursor-pointer"
+          title={userData?.name || "Profile"}
+          onClick={handleProfileClick}
+            >
+          {userData?.name?.charAt(0).toUpperCase() || "U"}
+            </div>
+          ) : (
+            <div className="flex gap-4">
+          <button
+            onClick={() => navigate("/login")}
+            className="border-2 border-gray-700 hover:bg-gray-700 hover:text-white font-sans font-bold px-4 py-2 rounded-md"
           >
-            {userData?.name?.charAt(0).toUpperCase() || "U"}
-          </div>
-        ) : (
-          <div className="flex gap-4">
-            <button
-              onClick={() => navigate("/login")}
-              className="border-2 border-gray-700 hover:bg-gray-700 hover:text-white font-sans font-bold px-4 py-2 rounded-md"
-            >
-              Login
-            </button>
-            <button
-              onClick={() => navigate("/signup")}
-              className="bg-gray-700 font-sans font-bold text-white px-4 py-2 rounded-md shadow-md shadow-white"
-            >
-              Signup
-            </button>
-          </div>
-        )}
-      </div>
+            Login
+          </button>
+          <button
+            onClick={() => navigate("/signup")}
+            className="bg-gray-700 font-sans font-bold text-white px-4 py-2 rounded-md shadow-md shadow-white"
+          >
+            Signup
+          </button>
+            </div>
+          )}
+        </div>
 
-      {/* Mobile Dropdown Menu */}
+        {/* Mobile Dropdown Menu */}
       {toggleMenu && (
         <div className="sm:hidden absolute top-full right-2 left-2/3 bg-white shadow-md border-t border-gray-400">
           <ul className="flex flex-col gap-2 p-4">
