@@ -1,6 +1,11 @@
 import Cookies from 'js-cookie';
 import { createContext, useEffect, useState } from "react";
 import { jwtDecode } from 'jwt-decode';
+import axios from 'axios';
+
+// Configure axios defaults
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export const AppContext = createContext();
 

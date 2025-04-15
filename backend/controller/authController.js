@@ -62,9 +62,9 @@ export const googleAuthCallback = async (req, res) => {
             expiresIn: "7d",
         });
 
-        res.cookie("youtubeAuth", token, {
-            httpOnly: true,
-        }).redirect(process.env.CLIENT_URL);
+        // The cookie settings will be handled by our middleware in server.js
+        res.cookie("youtubeAuth", token)
+           .redirect(process.env.CLIENT_URL);
     } catch (error) {
         console.error(error);
         return res.status(500).json({ success: false, error: error.message });

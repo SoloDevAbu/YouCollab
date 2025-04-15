@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken';
 import transporter from '../config/nodemailer.js';
 
 const JWT_SECRET = process.env.JWT_SECRET;
+const isDevelopment = process.env.NODE_ENV === 'development';
 
 export const createEditor = async (req, res) => {
     const { name, email, password, userType } = req.body;
@@ -40,11 +41,13 @@ export const createEditor = async (req, res) => {
             { expiresIn: '7d' }
         );
 
-        res.status(201).cookie('token', token, {
+        res.cookie('token', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            secure: !isDevelopment,
+            sameSite: isDevelopment ? 'lax' : 'none',
+            domain: isDevelopment ? 'localhost' : '.vercel.app',
+            path: '/',
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
         });
 
         const mailOptions = {
@@ -93,11 +96,13 @@ export const loginEditor = async (req, res) => {
             { expiresIn: '7d' }
         );
 
-        res.status(201).cookie('token', token, {
+        res.cookie('token', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            secure: !isDevelopment,
+            sameSite: isDevelopment ? 'lax' : 'none',
+            domain: isDevelopment ? 'localhost' : '.vercel.app',
+            path: '/',
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
         });
 
         return res.json({
