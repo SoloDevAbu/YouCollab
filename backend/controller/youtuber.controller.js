@@ -3,6 +3,8 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import transporter from '../config/nodemailer.js';
 import dotenv from 'dotenv';
+import { getAuthCookieConfig, getYoutubeAuthCookieConfig, getClearCookieConfig } from '../config/cookieConfig.js';
+
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -40,14 +42,7 @@ export const createYoutuber = async (req, res) => {
             { expiresIn: '7d' }
         )
 
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: !isDevelopment,
-            sameSite: isDevelopment ? 'lax' : 'none',
-            domain: isDevelopment ? 'localhost' : '.vercel.app',
-            path: '/',
-            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-        });
+        res.cookie('token', token, getAuthCookieConfig());
 
         const mailOptions = {
             from: process.env.SENDER_EMAIL,
@@ -94,26 +89,14 @@ export const loginYoutuber = async (req, res) => {
             { expiresIn: '7d' }
         )
 
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: !isDevelopment,
-            sameSite: isDevelopment ? 'lax' : 'none',
-            domain: isDevelopment ? 'localhost' : '.vercel.app',
-            path: '/',
-            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-        });
+        res.cookie('token', token, getAuthCookieConfig());
         
         if (youtubeAccount) {
             const youtubeToken = jwt.sign(youtubeAccount.toObject(), process.env.JWT_SECRET, {
                 expiresIn: "1h",
             });
 
-            res.cookie('youtubeAuth', youtubeToken, {
-                httpOnly: true, // Prevents client-side access
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-                maxAge: 1 * 60 * 60 * 1000,
-              });
+            res.cookie('youtubeAuth', youtubeToken, getYoutubeAuthCookieConfig());
         }
 
         return res.status(200).json({
@@ -169,15 +152,12 @@ export const updateYoutuber = async (req, res) => {
 
 export const logoutYoutuber = async (req, res) => {
     try {
-        res.clearCookie('token', {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
-        })
+        res.clearCookie('token', getClearCookieConfig());
+        res.clearCookie('youtubeAuth', getClearCookieConfig());
 
         return res.json({
             success: true,
-            message: "Logou successfully"
+            message: "Logout successful"
         })
     } catch (error) {
         res.status(500).json({
