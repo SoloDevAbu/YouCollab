@@ -5,8 +5,10 @@ import { Editor } from '../db/db.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import transporter from '../config/nodemailer.js';
+import { getAuthCookieConfig, getClearCookieConfig } from '../config/cookieConfig.js';
 
 const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 export const createEditor = async (req, res) => {
@@ -38,17 +40,10 @@ export const createEditor = async (req, res) => {
         const token = jwt.sign(
             { editorId: editor._id, name: editor.name, email: editor.email, userType },
             JWT_SECRET,
-            { expiresIn: '7d' }
+            { expiresIn: JWT_EXPIRES_IN }
         );
 
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: !isDevelopment,
-            sameSite: isDevelopment ? 'lax' : 'none',
-            domain: isDevelopment ? 'localhost' : '.vercel.app',
-            path: '/',
-            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-        });
+        res.cookie('token', token, getAuthCookieConfig());
 
         const mailOptions = {
             from: process.env.SENDER_EMAIL,
@@ -93,17 +88,10 @@ export const loginEditor = async (req, res) => {
         const token = jwt.sign(
             { editorId: editor._id, name: editor.name, email: editor.email, userType },
             JWT_SECRET,
-            { expiresIn: '7d' }
+            { expiresIn: JWT_EXPIRES_IN }
         );
 
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: !isDevelopment,
-            sameSite: isDevelopment ? 'lax' : 'none',
-            domain: isDevelopment ? 'localhost' : '.vercel.app',
-            path: '/',
-            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-        });
+        res.cookie('token', token, getAuthCookieConfig());
 
         return res.json({
             success: true,
@@ -158,15 +146,11 @@ export const updateEditor = async (req, res) => {
 
 export const logoutEditor = async (req, res) => {
     try {
-        res.clearCookie('token', {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
-        });
+        res.clearCookie('token', getClearCookieConfig());
 
         return res.json({
             success: true,
-            message: "Logout successfully"
+            message: "Logout successful"
         });
     } catch (error) {
         res.status(500).json({

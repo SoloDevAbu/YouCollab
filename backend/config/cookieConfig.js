@@ -4,11 +4,23 @@ dotenv.config();
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 export const getCookieConfig = (options = {}) => {
+  const domain = isDevelopment 
+    ? process.env.COOKIE_DOMAIN 
+    : process.env.PRODUCTION_COOKIE_DOMAIN;
+
+  const secure = isDevelopment 
+    ? process.env.COOKIE_SECURE === 'true'
+    : process.env.PRODUCTION_COOKIE_SECURE === 'true';
+
+  const sameSite = isDevelopment 
+    ? process.env.COOKIE_SAME_SITE 
+    : process.env.PRODUCTION_COOKIE_SAME_SITE;
+
   return {
     httpOnly: true,
-    secure: isDevelopment ? false : process.env.PRODUCTION_COOKIE_SECURE === 'true',
-    sameSite: isDevelopment ? 'lax' : 'none',
-    domain: isDevelopment ? process.env.COOKIE_DOMAIN : process.env.PRODUCTION_COOKIE_DOMAIN,
+    secure,
+    sameSite,
+    domain,
     path: '/',
     ...options
   };
@@ -27,11 +39,5 @@ export const getYoutubeAuthCookieConfig = () => {
 };
 
 export const getClearCookieConfig = () => {
-  return {
-    httpOnly: true,
-    secure: isDevelopment ? false : process.env.PRODUCTION_COOKIE_SECURE === 'true',
-    sameSite: isDevelopment ? 'lax' : 'none',
-    domain: isDevelopment ? process.env.COOKIE_DOMAIN : process.env.PRODUCTION_COOKIE_DOMAIN,
-    path: '/'
-  };
+  return getCookieConfig();
 }; 
