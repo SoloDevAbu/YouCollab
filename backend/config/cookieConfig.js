@@ -12,7 +12,7 @@ export const getCookieConfig = (options = {}) => {
     httpOnly: true,
     secure,
     sameSite: 'none',
-    domain: 'you-collab.vercel.app',
+    domain: '.vercel.app',
     path: '/',
     maxAge: 7 * 24 * 60 * 60 * 1000,
   };
