@@ -10,7 +10,6 @@ dotenv.config();
 const allowedOrigins = ['http://localhost:5173', 'https://you-collab.vercel.app'];
 const isDevelopment = process.env.NODE_ENV === 'development';
 
-// Configure CORS with specific options
 app.use(cors({
   origin: function(origin, callback) {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
@@ -26,28 +25,6 @@ app.use(cors({
 
 app.use(json());
 app.use(cookieParser());
-
-// Set default cookie options for all routes
-app.use((req, res, next) => {
-  res.cookie = res.cookie.bind(res);
-  const originalCookie = res.cookie;
-  res.cookie = function (name, value, options = {}) {
-    const defaultOptions = {
-      httpOnly: true,
-      secure: !isDevelopment,
-      sameSite: isDevelopment ? 'lax' : 'none',
-      path: '/',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    };
-
-    if (!isDevelopment) {
-      defaultOptions.domain = '.vercel.app';
-    }
-
-    return originalCookie.call(this, name, value, { ...defaultOptions, ...options });
-  };
-  next();
-});
 
 app.use('/api/v1/', mainRoute);
 app.use('/api/youtube/', authRoute);
